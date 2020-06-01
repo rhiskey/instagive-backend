@@ -33,6 +33,6 @@ module,exports = app.get('/accounts', function (req, res) {
 });
 
 // Start the server
-app.listen(PORT, () => {
-console.log('Go to http://localhost:3001/accounts to see accounts');
+app.listen(3000, () => {
+console.log('Go to http://localhost:3000/accounts to see accounts');
 });
