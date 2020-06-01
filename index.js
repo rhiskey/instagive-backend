@@ -12,12 +12,13 @@ const connection = mysql.createConnection({
   password: "uINWTwfn8qUkqup8"
 });
 
-express()
-  .use(express.static(path.join(__dirname, 'public')))
-  .set('views', path.join(__dirname, 'views'))
-  .set('view engine', 'ejs')
-  .get('/', (req, res) => res.render('pages/index'))
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`))
+// express()
+//   .use(express.static(path.join(__dirname, 'public')))
+//   .set('views', path.join(__dirname, 'views'))
+//   .set('view engine', 'ejs')
+//   .get('/', (req, res) => res.render('pages/index'))
+//   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
+
   // Initialize the app
 const app = express();
 app.use(cors());
@@ -33,6 +34,6 @@ module,exports = app.get('/accounts', function (req, res) {
 });
 
 // Start the server
-app.listen(3000, () => {
+app.listen(PORT, () => {
 console.log('Go to http://localhost:3000/accounts to see accounts');
 });
