@@ -4,13 +4,23 @@ const PORT = process.env.PORT || 5000
 const mysql      = require('mysql2');
 const cors = require('cors')
 
-
-const connection = mysql.createConnection({
+var db_config = {
   host: "77.51.178.66",
   user: "givawaytest",
   database: "givaway",
   password: "uINWTwfn8qUkqup8"
-});
+}
+
+var connection;
+
+connection = mysql.createConnection(db_config); 
+// const connection = mysql.createConnection({
+//   host: "77.51.178.66",
+//   user: "givawaytest",
+//   database: "givaway",
+//   password: "uINWTwfn8qUkqup8"
+// });
+
 
 // express()
 //   .use(express.static(path.join(__dirname, 'public')))
@@ -30,10 +40,10 @@ module,exports = app.get('/accounts', function (req, res) {
     res.send(JSON.stringify(results))
     //console.log(results);
   });
-  connection.end();
+  //connection.end();
 });
 
 // Start the server
 app.listen(PORT, () => {
-console.log('Go to http://localhost:3000/accounts to see accounts');
+console.log('Go to http://localhost: ${ PORT } 5000 /accounts to see accounts');
 });
