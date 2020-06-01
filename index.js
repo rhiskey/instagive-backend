@@ -18,7 +18,8 @@ express()
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
-  
+  // Initialize the app
+const app = express();
 app.use(cors());
 // https://expressjs.com/en/guide/routing.html
 module,exports = app.get('/accounts', function (req, res) {
