@@ -52,6 +52,15 @@ app.get('/mainusers', function (req, res) {
   //connection.end();
 });
 
+app.get('/follow', function (req, res) {
+  connection.connect();
+  connection.query('SELECT * FROM givaway.Follow', function (error, results, fields) {
+    if (error) throw error;
+    res.send(JSON.stringify(results))
+    //console.log(results);
+  });
+  //connection.end();
+});
 // Start the server
 app.listen(PORT, () => {
 console.log('Go to http://localhost: ${ PORT } 5000 /accounts to see accounts');
