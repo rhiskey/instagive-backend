@@ -42,8 +42,24 @@ module,exports = app.get('/accounts', function (req, res) {
   });
   //connection.end();
 });
+app.get('/mainusers', function (req, res) {
+  connection.connect();
+  connection.query('SELECT * FROM givaway.mainusers', function (error, results, fields) {
+    if (error) throw error;
+    res.send(JSON.stringify(results))
+    //console.log(results);
+  });
+  //connection.end();
+});
 
 // Start the server
 app.listen(PORT, () => {
 console.log('Go to http://localhost: ${ PORT } 5000 /accounts to see accounts');
 });
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('*', function(req, res) {
+  res.sendFile('https://insta-give.herokuapp.com/index.html');
+});
+
