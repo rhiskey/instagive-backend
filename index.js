@@ -2,6 +2,7 @@ const express = require('express')
 const path = require('path')
 const PORT = process.env.PORT || 5000
 const mysql      = require('mysql2');
+const bodyParser = require("body-parser");
 const cors = require('cors')
 
 var db_config = {
@@ -32,6 +33,7 @@ connection = mysql.createConnection(db_config);
   // Initialize the app
 const app = express();
 app.use(cors());
+
 // https://expressjs.com/en/guide/routing.html
 module,exports = app.get('/accounts', function (req, res) {
   connection.connect();
@@ -70,14 +72,32 @@ app.get('/follow', function (req, res) {
   });
   //connection.end();
 });
+
 // Start the server
 app.listen(PORT, () => {
 console.log('Go to http://localhost: ${ PORT } 5000 /accounts to see accounts');
 });
+
+// Получить с фронта запросом responseInstagram -> отправляет сюда {authCode} на страницу /oauth
+
+// Parse URL-encoded bodies (as sent by HTML forms)
+app.use(express.urlencoded());
+
+// Parse JSON bodies (as sent by API clients)
+app.use(express.json());
+
+// Access the parse results as request.body
+app.post('/oauth', function(request, response){
+    console.log(request.body.user.authCode);
+    //console.log(request.body.user.email);
+});
+
+// curl -X POST \ https://api.instagram.com/oauth/access_token \ -F client_id=296560698030895 \ -F client_secret=759f4d6c839b89130426f21518ca56d5 \ -F grant_type=authorization_code \ -F redirect_uri=https://insta-give.herokuapp.com/ \ -F code={authCode}
+// Отправляем токен обратном во фронт
+// Далее отобразим кнопки для прямой подписки во фронте
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('*', function(req, res) {
   res.sendFile('https://insta-give.herokuapp.com/index.html');
 });
-
