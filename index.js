@@ -77,30 +77,31 @@ app.get('/follow', function (req, res) {
 
 // Получить с фронта запросом responseInstagram -> отправляет сюда {authCode} на страницу /oauth
 
-// // Parse URL-encoded bodies (as sent by HTML forms)
-// app.use(express.urlencoded());
+// Parse URL-encoded bodies (as sent by HTML forms)
+app.use(express.urlencoded());
 
-// // Parse JSON bodies (as sent by API clients)
-// app.use(express.json());
+// Parse JSON bodies (as sent by API clients)
+app.use(express.json());
 
 // // Access the parse results as request.body
 // app.post('/oauth', function(request, response){
 //     console.log(request.body.user.authCode);
 //     //console.log(request.body.user.email);
+//     response.send(request.body.user.authCode);
 // });
 
-// app.post("/oath", urlencodedParser, function (request, response) {
-//   if(!request.body) return response.sendStatus(400);
-//   console.log(request.body);
-//   response.send(`${request.body.authCode}`);
-// });
-
-// Get AuthCode
-app.post('/oauth', (req, res) => {
-  if (!req.body) return res.sendStatus(400);
-  console.log(req.body, "body");
-  res.send('welcome, ' + req.body.authCode)
+app.post("/oauth", urlencodedParser, function (request, response) {
+  if(!request.body) return response.sendStatus(400);
+  console.log(request.body);
+  response.send(`${request.body.authCode}`);
 });
+
+// // Get AuthCode
+// app.post('/oauth', (req, res) => {
+//   if (!req.body) return res.sendStatus(400);
+//   console.log(req.body, "body");
+//   res.send('welcome, ' + req.body.authCode)
+// });
 
 // Start the server
 app.listen(PORT, () => {
