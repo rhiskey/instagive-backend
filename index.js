@@ -73,23 +73,40 @@ app.get('/follow', function (req, res) {
   //connection.end();
 });
 
+// Получить с фронта запросом responseInstagram -> отправляет сюда {authCode} на страницу /oauth
+
+// // Parse URL-encoded bodies (as sent by HTML forms)
+// app.use(express.urlencoded());
+
+// // Parse JSON bodies (as sent by API clients)
+// app.use(express.json());
+
+// // Access the parse results as request.body
+// app.post('/oauth', function(request, response){
+//     console.log(request.body.user.authCode);
+//     //console.log(request.body.user.email);
+// });
+
+/** bodyParser.urlencoded(options)
+ * Parses the text as URL encoded data (which is how browsers tend to send form data from regular forms set to POST)
+ * and exposes the resulting object (containing the keys and values) on req.body
+ */
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
+/**bodyParser.json(options)
+* Parses the text as JSON and exposes the resulting object on req.body.
+*/
+app.use(bodyParser.json());
+
+app.post("/oauth", function (req, res) {
+  console.log(req.body.user.authCode)
+});
+
 // Start the server
 app.listen(PORT, () => {
 console.log('Go to http://localhost: ${ PORT } 5000 /accounts to see accounts');
-});
-
-// Получить с фронта запросом responseInstagram -> отправляет сюда {authCode} на страницу /oauth
-
-// Parse URL-encoded bodies (as sent by HTML forms)
-app.use(express.urlencoded());
-
-// Parse JSON bodies (as sent by API clients)
-app.use(express.json());
-
-// Access the parse results as request.body
-app.post('/oauth', function(request, response){
-    console.log(request.body.user.authCode);
-    //console.log(request.body.user.email);
 });
 
 // curl -X POST \ https://api.instagram.com/oauth/access_token \ -F client_id=296560698030895 \ -F client_secret=759f4d6c839b89130426f21518ca56d5 \ -F grant_type=authorization_code \ -F redirect_uri=https://insta-give.herokuapp.com/ \ -F code={authCode}
