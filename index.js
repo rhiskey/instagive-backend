@@ -22,7 +22,9 @@ connection = mysql.createConnection(db_config);
 //   password: "uINWTwfn8qUkqup8"
 // });
 
-
+// создаем парсер для данных application/x-www-form-urlencoded
+const urlencodedParser = bodyParser.urlencoded({extended: false});
+ 
 // express()
 //   .use(express.static(path.join(__dirname, 'public')))
 //   .set('views', path.join(__dirname, 'views'))
@@ -87,21 +89,10 @@ app.get('/follow', function (req, res) {
 //     //console.log(request.body.user.email);
 // });
 
-/** bodyParser.urlencoded(options)
- * Parses the text as URL encoded data (which is how browsers tend to send form data from regular forms set to POST)
- * and exposes the resulting object (containing the keys and values) on req.body
- */
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-
-/**bodyParser.json(options)
-* Parses the text as JSON and exposes the resulting object on req.body.
-*/
-app.use(bodyParser.json());
-
-app.post("/oauth", function (req, res) {
-  console.log(req.body.user.authCode)
+app.post("/oath", urlencodedParser, function (request, response) {
+  if(!request.body) return response.sendStatus(400);
+  console.log(request.body);
+  response.send(`${request.body.authCode}`);
 });
 
 // Start the server
