@@ -96,7 +96,7 @@ app.get('/follow', function (req, res) {
 // });
 
 // Get AuthCode
-app.post('/oath', (req, res) => {
+app.post('https://insta-give.herokuapp.com/', (req, res) => {
   if (!req.body) return res.sendStatus(400);
   console.log(req.body, "body");
   res.send('welcome, ' + req.body.authCode)
