@@ -54,7 +54,7 @@ app.get('/mainusers', function (req, res) {
 
 app.get('/alljoin', function (req, res) {
   connection.connect();
-  connection.query('SELECT Follow.id, Follow.follower_link, Follow.follower_avatar, Follow.follower_username, mainusers.giveinfo, mainusers.username, mainusers.avatar, mainusers.link FROM Follow INNER JOIN mainusers ON Follow.followedid=mainusers.userid;', function (error, results, fields) {
+  connection.query('SELECT Follow.id, Follow.linkFollower, Follow.avatarFollower, Follow.usernameFollower, mainusers.giveinfo, mainusers.username, mainusers.avatar, mainusers.link FROM Follow INNER JOIN mainusers ON Follow.followedid=mainusers.userid;', function (error, results, fields) {
     if (error) throw error;
     res.send(JSON.stringify(results))
     //console.log(results);
