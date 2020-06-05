@@ -89,10 +89,17 @@ app.get('/follow', function (req, res) {
 //     //console.log(request.body.user.email);
 // });
 
-app.post("/oath", urlencodedParser, function (request, response) {
-  if(!request.body) return response.sendStatus(400);
-  console.log(request.body);
-  response.send(`${request.body.authCode}`);
+// app.post("/oath", urlencodedParser, function (request, response) {
+//   if(!request.body) return response.sendStatus(400);
+//   console.log(request.body);
+//   response.send(`${request.body.authCode}`);
+// });
+
+// Get AuthCode
+app.post('/oath', (req, res) => {
+  if (!req.body) return res.sendStatus(400);
+  console.log(req.body, "body");
+  res.send('welcome, ' + req.body.authCode)
 });
 
 // Start the server
