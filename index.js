@@ -112,7 +112,12 @@ app.post("/oauth", urlencodedParser, function (request, responseAuth) {
 
     } else { inBoundResp.send(`${response.statusCode}`); } //Если ошибка отправляем статус во фроннт
     //res.redirect('/');
-  });
+  }, (error, res, body) => {
+    if (error) {
+      console.error(error)
+      return
+    }}
+  );
 
 });
 
