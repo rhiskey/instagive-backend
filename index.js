@@ -93,7 +93,7 @@ app.use(express.json());
 app.post("/oauth", urlencodedParser, function (request, response) {
   if(!request.body) return response.sendStatus(400);
   console.log(request.body);
-  response.send(`${request.body.authCode}`);
+  response.send(`${request.body.user.authCode}`);
 });
 
 // // Get AuthCode
