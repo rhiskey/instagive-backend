@@ -86,12 +86,6 @@ app.use(express.urlencoded());
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
 
-// // Access the parse results as request.body
-// app.post('/oauth', function(request, response){
-//     console.log(request.body.user.authCode);
-//     //console.log(request.body.user.email);
-//     response.send(request.body.user.authCode);
-// });
 
 app.post("/oauth", urlencodedParser, function (request, responseAuth) {
   if(!request.body) return responseAuth.sendStatus(400);
@@ -109,57 +103,22 @@ app.post("/oauth", urlencodedParser, function (request, responseAuth) {
 			code: request.body.authCode
 		}
   };
+
   httpRequest(options, function (error, response, body) {
 		if (!error && response.statusCode == 200) {
 			var user = JSON.parse(body);
       console.log(user)
       inBoundResp.send(`${user.access_token}`);
-      //console.log(user.access_token)
-		}
+      console.log(user.access_token)
+
+    } else{inBoundResp.send(`${response.statusCode}`);}
+    //if (error) inBoundResp.send(`${user.access_token}`);
+    //res.redirect('/');
   });
-  
-	// httpRequest(options, function (error, response, body) {
-	// 	if (!error && response.statusCode == 200) {
-	// 		var r = JSON.parse(body);
-	// 		// var user = {
-	// 		// 	id: r.user.id,
-	// 		// 	username: r.user.username,
-	// 		// 	full_name: r.user.full_name,
-	// 		// 	bio: r.user.bio,
-	// 		// 	website: r.user.website,
-	// 		// 	profile_picture: r.user.profile_picture,
-	// 		// 	access_token: r.access_token
-  //     // };
-
-	// 		console.log(r)
-  //     // response.send(`${r.access_token}`);
-	// 		// User.create(user, function (error) {
-	// 		// 	if (error) res.send(error);
-	// 		// 	res.redirect('/oauth');
-	// 		// })
-	// 	}
-  // });
-  
-  // //Process authCode and SendBack AccessToken
-  // axios.post('https://api.instagram.com/oauth/access_token', {
-  //  // todo: 'client_id=296560698030895&client_secret=759f4d6c839b89130426f21518ca56d5&grant_type=authorization_code&redirect_uri=https://insta-give.herokuapp.com/&code='+request.body.authCode
-  //   client_id: '296560698030895',
-  //   client_secret: '759f4d6c839b89130426f21518ca56d5',
-  //   grant_type: 'authorization_code',
-  //   redirect_uri: 'https://insta-give.herokuapp.com/',
-  //   code: request.body.authCode
-  // })
-  // // axios.post('https://api.instagram.com/oauth/access_tokenclient_id=296560698030895&client_secret=759f4d6c839b89130426f21518ca56d5&grant_type=authorization_code&redirect_uri=https://insta-give.herokuapp.com/&code='+request.body.authCode)
-  // .then((res) => {
-  //   console.log(`statusCode: ${res.statusCode}`)
-  //   //console.log(res)
-  //   response.send(`${res.statusText}`);
-  // })
-  // .catch((error) => {
-  //   console.error(error)
-  // })
-
-
+  //User.create(user, function (error) {
+    //if (error) res.send(error);
+    
+  //})
   // curl -X POST \ https://api.instagram.com/oauth/access_token \ -F client_id=296560698030895 \ -F client_secret=759f4d6c839b89130426f21518ca56d5 \ -F grant_type=authorization_code \ -F redirect_uri=https://insta-give.herokuapp.com/ \ -F code=
  
 });
