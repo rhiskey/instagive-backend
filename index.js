@@ -5,16 +5,17 @@ const mysql = require('mysql2');
 const bodyParser = require("body-parser");
 const cors = require('cors')
 var session = require('express-session');
-
 const axios = require('axios')
 const httpRequest = require('request');
 
+require('dotenv').config();
+
 var db_config = {
   connectionLimit: 5,
-  host: "77.51.178.66",
-  user: "givawaytest",
-  database: "givaway",
-  password: "uINWTwfn8qUkqup8"
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  database: process.env.DB_DATABASENAME,
+  password: process.env.DB_PASSWORD
 }
 
 var connection;
@@ -101,6 +102,9 @@ app.post("/add", urlencodedParser, function (request, response) {
       console.log(results);
     });
 
+    // //Parse Followed of request.body.userName 
+
+
   // connection.query(`INSERT INTO givaway.mainusers (username, link, giveinfo, avatar, userid) VALUES ( ${request.body.userName},${request.body.userLink},${request.body.userGiveinfo},${request.body.userAvatar},${request.body.userID})`, function (error, results, fields) {
   //   if (error) throw error;
   //   response.send(JSON.stringify(results))
@@ -136,16 +140,18 @@ app.post("/edit", urlencodedParser, function (request, response) {
 
 
 // https://expressjs.com/en/guide/routing.html
-module, exports = app.get('/accounts', function (req, res) {
-  connection.connect();
-  connection.query('SELECT * FROM givaway.accounts', function (error, results, fields) {
-    if (error) throw error;
-    res.send(JSON.stringify(results))
-    //console.log(results);
-  });
-  //connection.end();
-});
+// module, exports = app.get('/accounts', function (req, res) {
+//   
+//   connection.connect();
+//   connection.query('SELECT * FROM givaway.accounts', function (error, results, fields) {
+//     if (error) throw error;
+//     res.send(JSON.stringify(results))
+//     //console.log(results);
+//   });
+//   //connection.end();
+// });
 app.get('/mainusers', function (req, res) {
+  // Проверка авторизации, отправлять POST запрос сюда с данными авторизации
   connection.connect();
   connection.query('SELECT * FROM givaway.mainusers', function (error, results, fields) {
     if (error) throw error;
@@ -156,6 +162,7 @@ app.get('/mainusers', function (req, res) {
 });
 
 app.get('/alljoin', function (req, res) {
+  // Проверка авторизации, отправлять POST запрос сюда с данными авторизации
   connection.connect();
   connection.query('SELECT Follow.id, Follow.linkFollower, Follow.avatarFollower, Follow.usernameFollower, mainusers.giveinfo, mainusers.username, mainusers.avatar, mainusers.link FROM Follow INNER JOIN mainusers ON Follow.followedid=mainusers.userid;', function (error, results, fields) {
     if (error) throw error;
@@ -164,6 +171,7 @@ app.get('/alljoin', function (req, res) {
   });
   //connection.end();
 });
+
 app.get('/follow', function (req, res) {
   connection.connect();
   connection.query('SELECT * FROM givaway.Follow', function (error, results, fields) {
