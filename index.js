@@ -28,6 +28,8 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 // Initialize the app
 const app = express();
 
+app.set("view engine", "hbs");
+
 //Login Page
 app.use(session({
   secret: 'secret',
@@ -38,9 +40,116 @@ app.use(session({
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.get('/', function (request, response) {
-  response.sendFile(path.join(__dirname + '/login.html'));
+app.use(cors());
+// Parse URL-encoded bodies (as sent by HTML forms)
+app.use(express.urlencoded());
+
+// Parse JSON bodies (as sent by API clients)
+app.use(express.json());
+// NEW --------------
+
+app.use(express.static(path.join(__dirname, 'public')));
+// получение списка пользователей
+app.get("/", function(req, res){
+  if (req.session.loggedin) {
+    connection.query("SELECT * FROM givaway.mainusers", function(err, data) {
+      // res.send(JSON.stringify(results))
+      if(err) return console.log(err);
+      res.render("list.hbs", {
+          users: data
+      });
+    });
+  } else {
+    res.sendFile(path.join(__dirname + '/login.html'));
+    // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
+  }
+  // res
+  // connection.connect();
+  // connection.query('SELECT * FROM givaway.mainusers', function (error, results, fields) {
+  //   if (error) throw error;
+  //   res.send(JSON.stringify(results))
+  //   //console.log(results);
+  // });
+
+
 });
+// возвращаем форму для добавления данных
+app.get("/create", function(req, res){
+  res.render("create.hbs");
+});
+// получаем отправленные данные и добавляем их в БД 
+app.post("/create", urlencodedParser, function (req, res) {
+       
+  if(!req.body) return res.sendStatus(400);
+  const sql = "INSERT INTO givaway.mainusers (username, link, giveinfo, avatar, userid) VALUES (?, ?, ?, ?, ?) ";
+  const data = [req.body.userName, req.body.userLink, req.body.userGiveinfo, req.body.userAvatar, req.body.userID];
+  // connection.connect();
+  connection.query(sql, data, function (err, results) {
+    if (err) console.log(err);
+    req.send(JSON.stringify(results))
+    res.redirect("/");
+    // console.log(results);
+  });
+  // const name = req.body.name;
+  // const age = req.body.age;
+  // pool.query("INSERT INTO users (name, age) VALUES (?,?)", [name, age], function(err, data) {
+  //   if(err) return console.log(err);
+  //   res.redirect("/");
+  // });
+
+  
+});
+
+// получем id редактируемого пользователя, получаем его из бд и отправлям с формой редактирования
+app.get("/edit/:id", function(req, res){
+const id = req.params.id;
+connection.query("SELECT * FROM givaway.mainusers WHERE id=?", [id], function(err, data) {
+  if(err) return console.log(err);
+   res.render("edit.hbs", {
+      user: data[0]
+  });
+});
+});
+// получаем отредактированные данные и отправляем их в БД
+app.post("/edit", urlencodedParser, function (req, res) {
+       
+if(!req.body) return res.sendStatus(400);
+const name = req.body.userName;
+const link = req.body.userLink;
+const info = req.body.userGiveinfo;
+const avatar = req.body.userAvatar;
+const uid = req.body.userID;
+const id = req.body.id;
+ 
+connection.query("UPDATE givaway.mainusers SET username=?, giveinfo=?, avatar=?, link=?, userid=?, WHERE id=?", [name, info, avatar, link,uid, id], function(err, data) {
+  if(err) return console.log(err);
+  res.redirect("/");
+});
+});
+
+// получаем id удаляемого пользователя и удаляем его из бд
+app.post("/delete/:id", function(req, res){
+        
+const id = req.params.id;
+connection.query("DELETE FROM givaway.mainusers WHERE id=?", [id], function(err, data) {
+  if(err) return console.log(err);
+  res.redirect("/");
+});
+});
+// NEW --------------
+
+
+////-------OLD 
+
+// app.get('/', function (request, response) {
+//   if (request.session.loggedin) {
+//   // response.sendFile(path.join(__dirname + '/login.html'));
+// } else {
+//   response.sendFile(path.join(__dirname + '/login.html'));
+//   // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
+// }
+// // response.end();
+// });
 
 app.post('/auth', function (request, response) {
   var username = request.body.username;
@@ -50,7 +159,7 @@ app.post('/auth', function (request, response) {
       if (results.length > 0) {
         request.session.loggedin = true;
         request.session.username = username;
-        response.redirect('/add'); //add
+        response.redirect('/'); //add
       } else {
         response.send('Неправильные Username или Password!');
       }
@@ -71,72 +180,84 @@ app.get('/home', function (request, response) {
   response.end();
 });
 
-app.use(cors());
-// Parse URL-encoded bodies (as sent by HTML forms)
-app.use(express.urlencoded());
-
-// Parse JSON bodies (as sent by API clients)
-app.use(express.json());
-
-app.get("/add", urlencodedParser, function (request, response) {
-  if (request.session.loggedin) {
-    // response.send('Снова здравствуй, ' + request.session.username + '!');
-    response.sendFile(__dirname + "/add.html");
-  } else {
-    //response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
-     response.sendFile(path.join(__dirname + '/login.html'));
-    //response.redirect('/auth'); //add
-  }
-});
-
-app.post("/add", urlencodedParser, function (request, response) {
-    if (!request.body) return response.sendStatus(400);
-    console.log(request.body);
-    // response.send(`${request.body.userName} - ${request.body.userID} - ${request.body.userLink} - ${request.body.userGiveinfo}- ${request.body.userAvatar} `);
-    const sql = "INSERT INTO givaway.mainusers (username, link, giveinfo, avatar, userid) VALUES (?, ?, ?, ?, ?) ";
-    const data = [request.body.userName, request.body.userLink, request.body.userGiveinfo, request.body.userAvatar, request.body.userID];
-    // connection.connect();
-    connection.query(sql, data, function (err, results) {
-      if (err) console.log(err);
-      response.send(JSON.stringify(results))
-      console.log(results);
-    });
-
-    // //Parse Followed of request.body.userName 
 
 
-  // connection.query(`INSERT INTO givaway.mainusers (username, link, giveinfo, avatar, userid) VALUES ( ${request.body.userName},${request.body.userLink},${request.body.userGiveinfo},${request.body.userAvatar},${request.body.userID})`, function (error, results, fields) {
-  //   if (error) throw error;
-  //   response.send(JSON.stringify(results))
-  //   console.log(results);
-  // });
-  response.end();
-});
+// app.get("/add", urlencodedParser, function (request, response) {
+//   if (request.session.loggedin) {
+//     // response.send('Снова здравствуй, ' + request.session.username + '!');
+//     response.sendFile(__dirname + "/add.html");
+//   } else {
+//     //response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
+//      response.sendFile(path.join(__dirname + '/login.html'));
+//     //response.redirect('/auth'); //add
+//   }
+// });
 
-app.get("/edit", urlencodedParser, function (request, response) {
-  response.sendFile(__dirname + "/edit.html");
-});
-app.post("/edit", urlencodedParser, function (request, response) {
-  if (!request.body) return response.sendStatus(400);
+// app.post("/add", urlencodedParser, function (request, response) {
+//     if (!request.body) return response.sendStatus(400);
+//     console.log(request.body);
+//     // response.send(`${request.body.userName} - ${request.body.userID} - ${request.body.userLink} - ${request.body.userGiveinfo}- ${request.body.userAvatar} `);
+//     const sql = "INSERT INTO givaway.mainusers (username, link, giveinfo, avatar, userid) VALUES (?, ?, ?, ?, ?) ";
+//     const data = [request.body.userName, request.body.userLink, request.body.userGiveinfo, request.body.userAvatar, request.body.userID];
+//     // connection.connect();
+//     connection.query(sql, data, function (err, results) {
+//       if (err) console.log(err);
+//       response.send(JSON.stringify(results))
+//       console.log(results);
+//     });
 
-  // pool.execute("UPDATE users SET age=age+1 WHERE name=?", ["Stan"]) // изменение объектов
-  //   .then(result =>{ 
-  //     console.log(result[0]);
-  //     return pool.execute("SELECT * FROM users"); // получение объектов
-  //   })
-  //   .then(result =>{
-  //     console.log(result[0]);
-  //     pool.end();
-  //   })
-  //   .then(()=>{
-  //     console.log("пул закрыт");
-  //   })
-  //   .catch(function(err) {
-  //     console.log(err.message);
-  //   })
+//     // //Parse Followed of request.body.userName 
 
-}
-)
+
+//   // connection.query(`INSERT INTO givaway.mainusers (username, link, giveinfo, avatar, userid) VALUES ( ${request.body.userName},${request.body.userLink},${request.body.userGiveinfo},${request.body.userAvatar},${request.body.userID})`, function (error, results, fields) {
+//   //   if (error) throw error;
+//   //   response.send(JSON.stringify(results))
+//   //   console.log(results);
+//   // });
+//   response.end();
+// });
+
+// app.get("/list", urlencodedParser, function (request, response) {
+//   if (request.session.loggedin) {
+//     // response.send('Снова здравствуй, ' + request.session.username + '!');
+//     response.sendFile(__dirname + "/list.html");
+//   } else {
+//     //response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
+//      response.sendFile(path.join(__dirname + '/login.html'));
+//     //response.redirect('/auth'); //add
+//   }
+// });
+
+// app.post("/list", urlencodedParser, function (request, response) {
+//     if (!request.body) return response.sendStatus(400);
+//     console.log(request.body);
+
+// });
+
+// app.get("/edit", urlencodedParser, function (request, response) {
+//   response.sendFile(__dirname + "/edit.html");
+// });
+// app.post("/edit", urlencodedParser, function (request, response) {
+//   if (!request.body) return response.sendStatus(400);
+
+//   // pool.execute("UPDATE users SET age=age+1 WHERE name=?", ["Stan"]) // изменение объектов
+//   //   .then(result =>{ 
+//   //     console.log(result[0]);
+//   //     return pool.execute("SELECT * FROM users"); // получение объектов
+//   //   })
+//   //   .then(result =>{
+//   //     console.log(result[0]);
+//   //     pool.end();
+//   //   })
+//   //   .then(()=>{
+//   //     console.log("пул закрыт");
+//   //   })
+//   //   .catch(function(err) {
+//   //     console.log(err.message);
+//   //   })
+
+//   }
+// )
 
 
 // https://expressjs.com/en/guide/routing.html
@@ -150,6 +271,7 @@ app.post("/edit", urlencodedParser, function (request, response) {
 //   });
 //   //connection.end();
 // });
+
 app.get('/mainusers', function (req, res) {
   // Проверка авторизации, отправлять POST запрос сюда с данными авторизации
   connection.connect();

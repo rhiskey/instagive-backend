@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Список раздач</title>
+    <meta charset="utf-8" />
+    <style>
+        .list {
+            {{!-- width: 300px; --}}
+            margin: 0 auto;
+            font-family: Tahoma, Geneva, sans-serif;
+        }
+
+        .list h1 {
+            text-align: center;
+            color: #4d4d4d;
+            font-size: 24px;
+            padding: 20px 0 20px 0;
+        }
+
+        .list table {
+            color: #4d4d4d;
+            {{!-- font-size: 24px; --}}
+            {{!-- padding: 20px 0 20px 0; --}}
+        }
+
+        .list input[type="text"],
+        .list input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #dddddd;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .list input[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            background-color: #535b63;
+            border: 0;
+            box-sizing: border-box;
+            cursor: pointer;
+            font-weight: bold;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="list">
+        <h1>Список раздач</h1>
+        <p><a href="/create">Добавить раздачу</a></p>
+        <table>
+            <tr>
+                <th>Username</th>
+                <th>Link</th>
+                <th>GiveInfo</th>
+                <th>Avatar</th>
+                <th>UserID</th>
+
+                <th></th>
+            </tr>
+            {{#each users}}
+            <tr>
+                <td>{{this.username}}</td>
+                <td>{{this.link}}</td>
+                <td>{{this.giveinfo}}</td>
+                <td>{{this.avatar}}</td>
+                <td>{{this.userid}}</td>
+
+                <td>
+                    <a href="/edit/{{this.id}}">Редактировать</a>|
+                    <form action="delete/{{this.id}}" method="POST" style="display:inline;">
+                        <input type="submit" value="Delete" />
+                    </form>
+                </td>
+            </tr>
+            {{/each}}
+        </table>
+    </div>
+</body>
+<html>

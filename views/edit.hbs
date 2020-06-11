@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Редактирование раздачи</title>
+    <meta charset="utf-8" />
+    <style>
+        .edit-form {
+            width: 300px;
+            margin: 0 auto;
+            font-family: Tahoma, Geneva, sans-serif;
+        }
+
+        .edit-form h1 {
+            text-align: center;
+            color: #4d4d4d;
+            font-size: 24px;
+            padding: 20px 0 20px 0;
+        }
+
+        .edit-form input[type="text"],
+        .edit-form input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #dddddd;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .edit-form input[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            background-color: #535b63;
+            border: 0;
+            box-sizing: border-box;
+            cursor: pointer;
+            font-weight: bold;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="edit-form">
+        <h1>Редактирование раздачи</h1>
+        <form action="/edit" method="POST">
+            <input type="text" type="hidden" name="id" value="{{user.id}}" />
+            <label>Имя</label><br>
+            <input type="text" name="userName" value="{{user.userName}}" class="field" /><br><br>
+            <label>Инфо раздачи</label><br>
+            <input type="text" name="userGiveinfo" value="{{user.userGiveinfo}}" class="field" /><br><br>
+            <label>Ссылка на аватар</label><br>
+            <input type="text" name="userAvatar" value="{{user.userAvatar}}" class="field" /><br><br>
+            <label>Ссылка на профиль</label><br>
+            <input type="text" name="userLink" value="{{user.userLink}}" class="field" /><br><br>
+            <label>ID в инстаграм</label><br>
+            <input type="text" name="userID" value="{{user.userID}}" class="field" /><br><br>
+            <input type="submit" value="Отправить" />
+        </form>
+        <a href="/">К списку раздач</a>
+    </div>
+</body>
+<html>
