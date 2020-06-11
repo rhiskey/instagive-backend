@@ -49,7 +49,8 @@
 <body>
     <div class="list">
         <h1>Список раздач</h1>
-        <p><a href="/create">Добавить раздачу</a></p>
+        <p><a href="/create" class="btn btn-secondary">Добавить раздачу</a></p>
+        <p><a href="https://insta-give.herokuapp.com/" class="btn btn-primary" >Вернуться на сайт</a></p>
         <table>
             <tr>
                 <th>Username</th>
@@ -69,7 +70,7 @@
                 <td>{{this.userid}}</td>
 
                 <td>
-                    <a href="/edit/{{this.id}}">Редактировать</a>|
+                    <a href="/edit/{{this.id}}" class="btn btn-secondary">Редактировать</a>|
                     <form action="delete/{{this.id}}" method="POST" style="display:inline;">
                         <input type="submit" value="Delete" />
                     </form>
