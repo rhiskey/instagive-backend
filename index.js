@@ -82,7 +82,9 @@ app.get("/add", urlencodedParser, function (request, response) {
     // response.send('Снова здравствуй, ' + request.session.username + '!');
     response.sendFile(__dirname + "/add.html");
   } else {
-    response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
+    //response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
+     response.sendFile(path.join(__dirname + '/login.html'));
+    //response.redirect('/auth'); //add
   }
 });
 
