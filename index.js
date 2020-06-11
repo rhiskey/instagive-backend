@@ -50,13 +50,13 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
 // получение списка пользователей
-app.get("/", function(req, res){
+app.get("/", function (req, res) {
   if (req.session.loggedin) {
-    connection.query("SELECT * FROM givaway.mainusers", function(err, data) {
+    connection.query("SELECT * FROM givaway.mainusers", function (err, data) {
       // res.send(JSON.stringify(results))
-      if(err) return console.log(err);
+      if (err) return console.log(err);
       res.render("list.hbs", {
-          users: data
+        users: data
       });
     });
   } else {
@@ -74,13 +74,19 @@ app.get("/", function(req, res){
 
 });
 // возвращаем форму для добавления данных
-app.get("/create", function(req, res){
-  res.render("create.hbs");
+app.get("/create", function (req, res) {
+  if (req.session.loggedin) {
+    res.render("create.hbs");
+  } else {
+    res.sendFile(path.join(__dirname + '/login.html'));
+    // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
+  }
+
 });
 // получаем отправленные данные и добавляем их в БД 
 app.post("/create", urlencodedParser, function (req, res) {
-       
-  if(!req.body) return res.sendStatus(400);
+
+  if (!req.body) return res.sendStatus(400);
   const sql = "INSERT INTO givaway.mainusers (username, link, giveinfo, avatar, userid) VALUES (?, ?, ?, ?, ?) ";
   const data = [req.body.userName, req.body.userLink, req.body.userGiveinfo, req.body.userAvatar, req.body.userID];
   // connection.connect();
@@ -97,44 +103,50 @@ app.post("/create", urlencodedParser, function (req, res) {
   //   res.redirect("/");
   // });
 
-  
+
 });
 
 // получем id редактируемого пользователя, получаем его из бд и отправлям с формой редактирования
-app.get("/edit/:id", function(req, res){
-const id = req.params.id;
-connection.query("SELECT * FROM givaway.mainusers WHERE id=?", [id], function(err, data) {
-  if(err) return console.log(err);
-   res.render("edit.hbs", {
-      user: data[0]
-  });
-});
+app.get("/edit/:id", function (req, res) {
+  if (req.session.loggedin) {
+    const id = req.params.id;
+    connection.query("SELECT * FROM givaway.mainusers WHERE id=?", [id], function (err, data) {
+      if (err) return console.log(err);
+      res.render("edit.hbs", {
+        user: data[0]
+      });
+    });
+  } else {
+    res.sendFile(path.join(__dirname + '/login.html'));
+    // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
+  }
+
 });
 // получаем отредактированные данные и отправляем их в БД
 app.post("/edit", urlencodedParser, function (req, res) {
-       
-if(!req.body) return res.sendStatus(400);
-const name = req.body.userName;
-const link = req.body.userLink;
-const info = req.body.userGiveinfo;
-const avatar = req.body.userAvatar;
-const uid = req.body.userID;
-const id = req.body.id;
- 
-connection.query("UPDATE givaway.mainusers SET username=?, giveinfo=?, avatar=?, link=?, userid=?, WHERE id=?", [name, info, avatar, link,uid, id], function(err, data) {
-  if(err) return console.log(err);
-  res.redirect("/");
-});
+
+  if (!req.body) return res.sendStatus(400);
+  const name = req.body.userName;
+  const link = req.body.userLink;
+  const info = req.body.userGiveinfo;
+  const avatar = req.body.userAvatar;
+  const uid = req.body.userID;
+  const id = req.body.id;
+
+  connection.query("UPDATE givaway.mainusers SET username=?, giveinfo=?, avatar=?, link=?, userid=?, WHERE id=?", [name, info, avatar, link, uid, id], function (err, data) {
+    if (err) return console.log(err);
+    res.redirect("/");
+  });
 });
 
 // получаем id удаляемого пользователя и удаляем его из бд
-app.post("/delete/:id", function(req, res){
-        
-const id = req.params.id;
-connection.query("DELETE FROM givaway.mainusers WHERE id=?", [id], function(err, data) {
-  if(err) return console.log(err);
-  res.redirect("/");
-});
+app.post("/delete/:id", function (req, res) {
+
+  const id = req.params.id;
+  connection.query("DELETE FROM givaway.mainusers WHERE id=?", [id], function (err, data) {
+    if (err) return console.log(err);
+    res.redirect("/");
+  });
 });
 // NEW --------------
 
