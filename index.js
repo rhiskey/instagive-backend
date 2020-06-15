@@ -148,6 +148,25 @@ app.post("/delete/:id", function (req, res) {
     res.redirect("/");
   });
 });
+
+// получаем данные со фронта и отправляем их в БД - в ответе возвращаем список фолловеров из бд
+app.post("/getfollowers", urlencodedParser, function (req, res) {
+
+  if (!req.body) return res.sendStatus(400);
+  const name = req.body.username;
+
+  // По имени из mainusers - получить userID - затем в таблице Follow получить все записи у которых followedid совпадает с userID
+  connection.query("SELECT userid FROM givaway.mainusers WHERE username =?", [name], function (err, userid) {
+    if (err) return console.log(err);
+    // res.redirect("/");
+    // const userID =  userid;
+    connection.query("SELECT * FROM givaway.Follow WHERE followedid =?", [userid], function (err, followers) {
+      if (err) return console.log(err);
+      res.send(JSON.stringify(followers));
+    });
+  });
+});
+
 // NEW --------------
 
 
