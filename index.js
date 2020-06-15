@@ -149,23 +149,6 @@ app.post("/delete/:id", function (req, res) {
   });
 });
 
-// получаем данные со фронта и отправляем их в БД - в ответе возвращаем список фолловеров из бд
-app.post("/getfollowers", urlencodedParser, function (req, res) {
-
-  if (!req.body) return res.sendStatus(400);
-  const name = req.body.username;
-
-  // По имени из mainusers - получить userID - затем в таблице Follow получить все записи у которых followedid совпадает с userID
-  connection.query("SELECT userid FROM givaway.mainusers WHERE username =?", [name], function (err, userid) {
-    if (err) return console.log(err);
-    // res.redirect("/");
-    // const userID =  userid;
-    connection.query("SELECT * FROM givaway.Follow WHERE followedid =?", [userid], function (err, followers) {
-      if (err) return console.log(err);
-      res.send(JSON.stringify(followers));
-    });
-  });
-});
 
 // NEW --------------
 
@@ -333,6 +316,34 @@ app.get('/follow', function (req, res) {
     //console.log(results);
   });
   //connection.end();
+});
+
+// получаем данные со фронта и отправляем их в БД - в ответе возвращаем список фолловеров из бд
+app.post("/getfollowers", urlencodedParser, function (req, res) {
+
+  if (!req.body) return res.sendStatus(400);
+  console.log(req.body);
+  const name = req.body.username;
+  // console.log(req.body.username);
+  // По имени из mainusers - получить userID - затем в таблице Follow получить все записи у которых followedid совпадает с userID
+  connection.query('SELECT userid FROM givaway.mainusers WHERE username=?', [name], function (err, responseID) {
+    if (err) return console.log(err);
+    // res.redirect("/");
+    console.log(responseID);
+
+    //// Если вдруг их много (имя одно и тоже а ID разные)
+    // const users = responseID;
+    // for(let i=0; i < users.length; i++){
+    //   console.log(users[i].userid);
+
+     const ID =  responseID[0].userid; //один единственный!
+     console.log(ID);
+    connection.query('SELECT * FROM givaway.Follow WHERE followedid=?', [ID], function (err, followers) {
+      if (err) return console.log(err);
+      console.log(followers);
+      res.send(JSON.stringify(followers));
+    });
+  });
 });
 
 // Получить с фронта запросом responseInstagram -> отправляет сюда {authCode} на страницу /oauth
