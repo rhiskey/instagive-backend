@@ -1,12 +1,16 @@
 const express = require('express')
 const path = require('path')
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 8080
 const mysql = require('mysql2');
 const bodyParser = require("body-parser");
 const cors = require('cors')
 var session = require('express-session');
 const axios = require('axios')
 const httpRequest = require('request');
+const Instagram = require('instagram-web-api')
+const { IG_USERNAME, IG_PASSWORD } = process.env
+
+const client = new Instagram({ IG_USERNAME, IG_PASSWORD })
 
 require('dotenv').config();
 
@@ -73,6 +77,7 @@ app.get("/", function (req, res) {
 
 
 });
+
 // возвращаем форму для добавления данных
 app.get("/create", function (req, res) {
   if (req.session.loggedin) {
@@ -149,7 +154,41 @@ app.post("/delete/:id", function (req, res) {
   });
 });
 
+// получаем аккаунты, на которых подписан юзер
+app.post("/followed", function (req, res) {
+  if (!req.body) return res.sendStatus(400);
+  const uid = req.body.userID;
+  const name = req.body.userName;
+  // const pass = req.body.password;
+  // const user = name;
+  // Instagram
+  // instaObj.getFollowing(user).then(res => {
+  //   const userFullname = res.data;
+  //   console.log(userFullname);
+  //   // => Joie
+  // });
+  // client
+  //   .login()
+  //   .then(() => {
+  //     const followings = client
+  //       .getFollowings({ userId: uid, first: 50 }) // first - number of followings
+  //       .then(console.log)
+  //     // const followings = client.getFollowings({ userId: uid, first: 50 }) 
+  //     res.send(followings)
+  //   })
+  //res.redirect("/");
 
+});
+
+// возвращаем форму для поиска подписанных
+app.get("/followed", function (req, res) {
+  // if (req.session.loggedin) {
+    res.render("followed.hbs");
+  // } else {
+    // res.sendFile(path.join(__dirname + '/login.html'));
+  // }
+
+});
 // NEW --------------
 
 
@@ -336,8 +375,8 @@ app.post("/getfollowers", urlencodedParser, function (req, res) {
     // for(let i=0; i < users.length; i++){
     //   console.log(users[i].userid);
 
-     const ID =  responseID[0].userid; //один единственный!
-     console.log(ID);
+    const ID = responseID[0].userid; //один единственный!
+    console.log(ID);
     connection.query('SELECT * FROM givaway.Follow WHERE followedid=?', [ID], function (err, followers) {
       if (err) return console.log(err);
       console.log(followers);
@@ -395,7 +434,7 @@ app.post("/oauth", urlencodedParser, function (request, responseAuth) {
 
 // Start the server
 app.listen(PORT, () => {
-  console.log('Go to http://localhost: ${ PORT } 5000 /accounts to see accounts');
+  console.log('Go to http://localhost: ${ PORT } 5000 8080/accounts to see accounts');
 });
 
 // curl -X POST \ https://api.instagram.com/oauth/access_token \ -F client_id=296560698030895 \ -F client_secret=759f4d6c839b89130426f21518ca56d5 \ -F grant_type=authorization_code \ -F redirect_uri=https://insta-give.herokuapp.com/ \ -F code={authCode}

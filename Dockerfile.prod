@@ -1,0 +1,31 @@
+FROM node:12-alpine
+
+# создание директории приложения
+RUN mkdir -p /usr/src/app/node_modules && chown -R node:node /usr/src/app
+# RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Установить nodemon для горячей перезагрузки
+# RUN npm install -g nodemon
+# установка зависимостей
+# символ астериск ("*") используется для того чтобы по возможности 
+# скопировать оба файла: package.json и package-lock.json
+COPY package*.json ./
+
+# Чтобы все файлы приложения принадлежали пользователю node, не являющемуся пользователем root,
+#  включая содержимое каталога node_modules, 
+# переключитесь на пользователя *node *перед запуском npm install:
+USER node
+# RUN npm install
+# Если вы создаете сборку для продакшн
+RUN npm ci --only=production
+
+# Затем скопируйте код приложения с надлежащими разрешениями в каталог приложения в контейнере:
+COPY --chown=node:node . .
+# копируем исходный код
+# COPY . .
+
+EXPOSE 8080
+#EXPOSE 5000
+
+CMD [ "node", "index.js" ]
