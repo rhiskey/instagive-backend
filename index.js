@@ -106,6 +106,39 @@ app.post("/create", urlencodedParser, function (req, res) {
 
 });
 
+// возвращаем форму для добавления данных
+app.get("/insert", function (req, res) {
+  if (req.session.loggedin) {
+    res.render("insert.hbs");
+  } else {
+    res.sendFile(path.join(__dirname + '/login.html'));
+    // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
+  }
+
+});
+// получаем отправленные данные и добавляем их в БД 
+app.post("/insert", urlencodedParser, function (req, res) {
+
+  if (!req.body) return res.sendStatus(400);
+  const accString = req.body.accString;
+  var separator = ' ';
+  var arrayOfStrings = accString.split(separator);
+
+  var i;
+  for (i = 0; i < arrayOfStrings.length; i++) {
+    var nick = arrayOfStrings[i];
+    const sql = "INSERT INTO givaway.Follow (usernameFollower, followedid) VALUES (?, ?) ";
+    const data = [nick, req.body.followedID];
+    // connection.connect();
+    connection.query(sql, data, function (err, results) {
+      if (err) console.log(err);
+      // console.log(results);
+    });
+  }
+  res.redirect("/");
+
+});
+
 // получем id редактируемого пользователя, получаем его из бд и отправлям с формой редактирования
 app.get("/edit/:id", function (req, res) {
   if (req.session.loggedin) {
@@ -336,8 +369,8 @@ app.post("/getfollowers", urlencodedParser, function (req, res) {
     // for(let i=0; i < users.length; i++){
     //   console.log(users[i].userid);
 
-     const ID =  responseID[0].userid; //один единственный!
-     console.log(ID);
+    const ID = responseID[0].userid; //один единственный!
+    console.log(ID);
     connection.query('SELECT * FROM givaway.Follow WHERE followedid=?', [ID], function (err, followers) {
       if (err) return console.log(err);
       console.log(followers);
