@@ -111,6 +111,20 @@ app.post("/create", urlencodedParser, function (req, res) {
 
 });
 
+// Получаем список ID организаторов
+app.get('/getOrgID', function (req, res) {
+  if (!req.body) return res.sendStatus(400);
+  // If it's not showing up, just use req.body to see what is actually being passed.
+  console.log(req.body.selectpicker);
+  const sql = "SELECT username, userid FROM givaway.mainusers "
+  // connection.connect();
+  connection.query(sql, data, function (err, results) {
+    if (err) console.log(err);
+        res.send(JSON.stringify(results))
+    // console.log(results);
+  });
+});
+
 // возвращаем форму для добавления данных спонсоров
 app.get("/insert", function (req, res) {
   if (req.session.loggedin) {
