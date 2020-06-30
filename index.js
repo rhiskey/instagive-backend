@@ -111,7 +111,7 @@ app.post("/create", urlencodedParser, function (req, res) {
 
 });
 
-// возвращаем форму для добавления данных
+// возвращаем форму для добавления данных спонсоров
 app.get("/insert", function (req, res) {
   if (req.session.loggedin) {
     res.render("insert.hbs");
@@ -128,19 +128,22 @@ app.post("/insert", urlencodedParser, function (req, res) {
   const accString = req.body.accString;
   var separator = ' ';
   var arrayOfStrings = accString.split(separator);
-
+  //Для каждого элемента строки с разделителем пробел
   var i;
   for (i = 0; i < arrayOfStrings.length; i++) {
     var nick = arrayOfStrings[i];
-    const sql = "INSERT INTO givaway.Follow (usernameFollower, followedid, linkFollower) VALUES (?, ?, ?) ";
-    var instalink = "https://instagram.com/";
-    var link = instalink + nick;
-    const data = [nick, req.body.followedID, link];
-    // connection.connect();
-    connection.query(sql, data, function (err, results) {
-      if (err) console.log(err);
-      // console.log(results);
-    });
+    // Проверка на пустое и на "Подтвержденный"
+    if (nick && nick != "Подтвержденный") { //если не пустая
+      const sql = "INSERT INTO givaway.Follow (usernameFollower, followedid, linkFollower) VALUES (?, ?, ?) ";
+      var instalink = "https://instagram.com/";
+      var link = instalink + nick;
+      const data = [nick, req.body.followedID, link];
+      // connection.connect();
+      connection.query(sql, data, function (err, results) {
+        if (err) console.log(err);
+        // console.log(results);
+      });
+    }
   }
   res.redirect("/");
 
@@ -218,9 +221,9 @@ app.post("/followed", function (req, res) {
 // возвращаем форму для поиска подписанных
 app.get("/followed", function (req, res) {
   // if (req.session.loggedin) {
-    res.render("followed.hbs");
+  res.render("followed.hbs");
   // } else {
-    // res.sendFile(path.join(__dirname + '/login.html'));
+  // res.sendFile(path.join(__dirname + '/login.html'));
   // }
 
 });
@@ -269,96 +272,6 @@ app.get('/home', function (request, response) {
 });
 
 
-
-// app.get("/add", urlencodedParser, function (request, response) {
-//   if (request.session.loggedin) {
-//     // response.send('Снова здравствуй, ' + request.session.username + '!');
-//     response.sendFile(__dirname + "/add.html");
-//   } else {
-//     //response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
-//      response.sendFile(path.join(__dirname + '/login.html'));
-//     //response.redirect('/auth'); //add
-//   }
-// });
-
-// app.post("/add", urlencodedParser, function (request, response) {
-//     if (!request.body) return response.sendStatus(400);
-//     console.log(request.body);
-//     // response.send(`${request.body.userName} - ${request.body.userID} - ${request.body.userLink} - ${request.body.userGiveinfo}- ${request.body.userAvatar} `);
-//     const sql = "INSERT INTO givaway.mainusers (username, link, giveinfo, avatar, userid) VALUES (?, ?, ?, ?, ?) ";
-//     const data = [request.body.userName, request.body.userLink, request.body.userGiveinfo, request.body.userAvatar, request.body.userID];
-//     // connection.connect();
-//     connection.query(sql, data, function (err, results) {
-//       if (err) console.log(err);
-//       response.send(JSON.stringify(results))
-//       console.log(results);
-//     });
-
-//     // //Parse Followed of request.body.userName 
-
-
-//   // connection.query(`INSERT INTO givaway.mainusers (username, link, giveinfo, avatar, userid) VALUES ( ${request.body.userName},${request.body.userLink},${request.body.userGiveinfo},${request.body.userAvatar},${request.body.userID})`, function (error, results, fields) {
-//   //   if (error) throw error;
-//   //   response.send(JSON.stringify(results))
-//   //   console.log(results);
-//   // });
-//   response.end();
-// });
-
-// app.get("/list", urlencodedParser, function (request, response) {
-//   if (request.session.loggedin) {
-//     // response.send('Снова здравствуй, ' + request.session.username + '!');
-//     response.sendFile(__dirname + "/list.html");
-//   } else {
-//     //response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
-//      response.sendFile(path.join(__dirname + '/login.html'));
-//     //response.redirect('/auth'); //add
-//   }
-// });
-
-// app.post("/list", urlencodedParser, function (request, response) {
-//     if (!request.body) return response.sendStatus(400);
-//     console.log(request.body);
-
-// });
-
-// app.get("/edit", urlencodedParser, function (request, response) {
-//   response.sendFile(__dirname + "/edit.html");
-// });
-// app.post("/edit", urlencodedParser, function (request, response) {
-//   if (!request.body) return response.sendStatus(400);
-
-//   // pool.execute("UPDATE users SET age=age+1 WHERE name=?", ["Stan"]) // изменение объектов
-//   //   .then(result =>{ 
-//   //     console.log(result[0]);
-//   //     return pool.execute("SELECT * FROM users"); // получение объектов
-//   //   })
-//   //   .then(result =>{
-//   //     console.log(result[0]);
-//   //     pool.end();
-//   //   })
-//   //   .then(()=>{
-//   //     console.log("пул закрыт");
-//   //   })
-//   //   .catch(function(err) {
-//   //     console.log(err.message);
-//   //   })
-
-//   }
-// )
-
-
-// https://expressjs.com/en/guide/routing.html
-// module, exports = app.get('/accounts', function (req, res) {
-//   
-//   connection.connect();
-//   connection.query('SELECT * FROM givaway.accounts', function (error, results, fields) {
-//     if (error) throw error;
-//     res.send(JSON.stringify(results))
-//     //console.log(results);
-//   });
-//   //connection.end();
-// });
 
 app.get('/mainusers', function (req, res) {
   // Проверка авторизации, отправлять POST запрос сюда с данными авторизации
@@ -426,6 +339,7 @@ app.post("/oauth", urlencodedParser, function (request, responseAuth) {
   console.log(request.body);
   var inBoundResp = responseAuth;
 
+  // ЭТО ключи приложения INSTAGRAM SECRET и ID
   var options = {
     url: 'https://api.instagram.com/oauth/access_token',
     method: 'POST',
