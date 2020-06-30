@@ -132,8 +132,10 @@ app.post("/insert", urlencodedParser, function (req, res) {
   var i;
   for (i = 0; i < arrayOfStrings.length; i++) {
     var nick = arrayOfStrings[i];
-    const sql = "INSERT INTO givaway.Follow (usernameFollower, followedid) VALUES (?, ?) ";
-    const data = [nick, req.body.followedID];
+    const sql = "INSERT INTO givaway.Follow (usernameFollower, followedid, linkFollower) VALUES (?, ?, ?) ";
+    var instalink = "https://instagram.com/";
+    var link = instalink + nick;
+    const data = [nick, req.body.followedID, link];
     // connection.connect();
     connection.query(sql, data, function (err, results) {
       if (err) console.log(err);
