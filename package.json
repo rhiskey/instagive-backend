@@ -21,6 +21,7 @@
     "express-session": "^1.17.1",
     "hbs": "^4.1.1",
     "inquirer": "^7.2.0",
+    "instagram-nodejs-without-api": "^1.2.0",
     "instagram-web-api": "^2.2.0",
     "lodash": "^4.17.15",
     "mysql": "^2.18.1",

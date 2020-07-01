@@ -12,6 +12,9 @@ const { IG_USERNAME, IG_PASSWORD } = process.env
 
 const client = new Instagram({ IG_USERNAME, IG_PASSWORD })
 
+// Для парсера
+
+
 require('dotenv').config();
 
 var db_config = {
@@ -120,9 +123,50 @@ app.get('/getOrgID', function (req, res) {
   // connection.connect();
   connection.query(sql, data, function (err, results) {
     if (err) console.log(err);
-        res.send(JSON.stringify(results))
+    res.send(JSON.stringify(results))
     // console.log(results);
   });
+});
+
+
+// возвращаем форму 
+app.get("/getfollowers", function (req, res) {
+  if (req.session.loggedin) {
+    res.render("getfollowers.hbs");
+  } else {
+    res.sendFile(path.join(__dirname + '/login.html'));
+    // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
+  }
+
+});
+
+// получаем отправленные данные 
+app.post("/getfollowers", urlencodedParser, function (req, res) {
+
+  if (!req.body) return res.sendStatus(400);
+  const username2Parse = req.body.userNme;
+
+  // var Insta = new InstaApi()
+
+  // Insta.getCsrfToken().then((csrf) => {
+  //   Insta.csrfToken = csrf;
+  // }).then(() => {
+  //   return Insta.auth(process.env.IG_USERNAME, process.env.IG_PASSWORD).then(sessionId => {
+  //     Insta.sessionId = sessionId
+
+  //     return Insta.getUserDataByUsername(username2Parse).then((t) => {
+  //       return Insta.getUserFollowers(t.graphql.user.id).then((t) => {
+  //         console.log(t); // - instagram followers for user "username-for-get"
+  //         res.send(t);
+  //       })
+  //     })
+
+  //   })
+  // }).catch(console.error);
+
+  // res.redirect("/getfollowers");
+  // res.send(JSON.stringify(results))
+
 });
 
 // возвращаем форму для добавления данных спонсоров
