@@ -7,12 +7,38 @@ const cors = require('cors')
 var session = require('express-session');
 const axios = require('axios')
 const httpRequest = require('request');
+
 const Instagram = require('instagram-web-api')
 const { IG_USERNAME, IG_PASSWORD } = process.env
-
 const client = new Instagram({ IG_USERNAME, IG_PASSWORD })
 
 // Для парсера
+const Bot = require('./Bot');// this directly imports the Bot/index.js file
+const PUPconfig = require('./Bot/config/puppeter.json');
+
+const run = async (userNickname) => {
+  const bot = new Bot();
+
+  const startTime = Date();
+
+  await bot.initPuppeter().then(() => console.log("PUPPETEER INITIALIZED"));
+
+  await bot.visitInstagram().then(() => console.log("BROWSING INSTAGRAM"));
+
+  //await bot.visitHashtagUrl().then(() => console.log("VISITED HASH-TAG URL"));
+
+  await bot.visitFollowedUrl(userNickname).then(() => console.log("VISITED USERNAME URL"));
+
+
+  // await bot.unFollowUsers();
+
+  await bot.closeBrowser().then(() => console.log("BROWSER CLOSED"));
+
+  const endTime = Date();
+
+  console.log(`START TIME - ${startTime} / END TIME - ${endTime}`)
+
+};
 
 
 require('dotenv').config();
@@ -131,12 +157,12 @@ app.get('/getOrgID', function (req, res) {
 
 // возвращаем форму 
 app.get("/getfollowers", function (req, res) {
-  if (req.session.loggedin) {
+  // if (req.session.loggedin) {
     res.render("getfollowers.hbs");
-  } else {
-    res.sendFile(path.join(__dirname + '/login.html'));
-    // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
-  }
+  // } else {
+  //   res.sendFile(path.join(__dirname + '/login.html'));
+  //   // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
+  // }
 
 });
 
@@ -145,6 +171,17 @@ app.post("/getfollowers", urlencodedParser, function (req, res) {
 
   if (!req.body) return res.sendStatus(400);
   const username2Parse = req.body.userNme;
+
+  //Парсер подписчиков по имени
+
+  //Перейти на страницу инсты
+  // var instalink = "https://instagram.com/";
+  // var link = instalink + username2Parse;
+
+  run(username2Parse).catch(e => console.log(e.message));
+  //run bot at certain interval we have set in our config file
+  // setInterval(run, PUPconfig.settings.run_every_x_hours * 3600000);
+
 
   // var Insta = new InstaApi()
 
