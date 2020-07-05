@@ -262,6 +262,8 @@ class InstagramBot {
                 // var div_accounts_height = div_accounts[0].scrollHeight;
 
                 try {
+                    
+                    //Callback must be a function. Received Promise { <pending> }
                     var div_accounts_height = await page.evaluate(x => {
                         let element = document.querySelector(x)[0];
                         return Promise.resolve(element ? element.scrollHeight : '');
