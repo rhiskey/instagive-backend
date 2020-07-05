@@ -279,7 +279,6 @@ class InstagramBot {
 
                 try {
 
-<<<<<<< HEAD
                     // //Callback must be a function. Received Promise { <pending> }
                     // var div_accounts_height = await page.evaluate(x => {
                     //     let element = document.querySelector(x)[0];
@@ -292,13 +291,6 @@ class InstagramBot {
                             return e.scrollHeight
                         }
                     )
-=======
-                    //Callback must be a function. Received Promise { <pending> }
-                    var div_accounts_height = await page.evaluate(x => {
-                        let element = document.querySelector(x)[0];
-                        return Promise.resolve(element ? element.scrollHeight : '');
-                    }, div_accounts).then(height => { return height } );
->>>>>>> 8861cc363aa128f0d67fa84d05c1a9f1c8ca0f87
 
                     // div_accounts_height.then(function (value) {
                     //     console.log(value);
