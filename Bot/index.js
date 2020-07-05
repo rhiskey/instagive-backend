@@ -180,12 +180,12 @@ class InstagramBot {
             // СТАРТ РАБОТЫ СКРОЛЛИНГА + СБОР ДАННЫХ
             // ----------------------------------------------------------------------------------
             // run_scrolling(total_count, page, speed_scrolling, user_count, user_name, div_accounts, ul_accounts, li_accounts);
-            run_scrolling();
+            run_scrolling(page);
             // ----------------------------------------------------------------------------------
             // ----------------------------------------------------------------------------------
             // ФУНКЦИЯ СБОРА ДАННЫХ
             // ----------------------------------------------------------------------------------
-            async function start_parsing() {
+            async function start_parsing(page) {
 
                 var accounts = await page.evaluate(x => {
                     let element = document.querySelector(x)[0];
@@ -236,14 +236,33 @@ class InstagramBot {
             // ----------------------------------------------------------------------------------
             // ФУНКЦИЯ СКРОЛЛИНГА
             // ----------------------------------------------------------------------------------
-            async function run_scrolling() {
+            async function run_scrolling(page) {
+
+                // await page.evaluate(async (div_accounts)=> {
+                //     await new Promise((resolve,reject) => {
+                //         var div_accounts_height = div_accounts[0].scrollHeight;
+                //         resolve();
+                //     })
+                // })
+                // let items = [];
+                // var previousHeight = await page.evaluate('document.page.scrollHeight');   
+
+                var div_accounts_height = await page.evaluate((div_accounts) => {
+                    const container = document.querySelector(div_accounts);
+                    // container.scrollTo(0, container.scrollHeight);
+                    // let scroll_height = document.body.scrollHeight;
+                    let div_accounts_height = container.scrollHeight;
+                    return div_accounts_height;
+                });
+
+
                 // Определяем размер (высоту) прокрутки div_accounts
                 // var div_accounts_height = div_accounts[0].scrollHeight;
 
-                var div_accounts_height = await page.evaluate(x => {
-                    let element = document.querySelector(x)[0];
-                    return Promise.resolve(element ? element.scrollHeight : '');
-                }, div_accounts);
+                // var div_accounts_height = await page.evaluate(x => {
+                //     let element = document.querySelector(x)[0];
+                //     return Promise.resolve(element ? element.scrollHeight : '');
+                // }, div_accounts);
 
                 // div_accounts_height.then(function (value) {
                 //     console.log(value);
@@ -271,10 +290,10 @@ class InstagramBot {
                         height_scrolling = [];
                     }
                     // UnhandledPromiseRejectionWarning: TypeError [ERR_INVALID_CALLBACK]: Callback must be a function. Received Promise { <pending> }
-                    var timeoutID = setTimeout(run_scrolling(), speed_scrolling);
+                    var timeoutID = setTimeout(run_scrolling(page), speed_scrolling);
                 } else {
                     clearTimeout(timeoutID);
-                    start_parsing();
+                    start_parsing(page);
                 }
                 return false;
             }
