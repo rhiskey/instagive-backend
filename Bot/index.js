@@ -262,7 +262,7 @@ class InstagramBot {
                 // var div_accounts_height = div_accounts[0].scrollHeight;
 
                 try {
-                    
+
                     //Callback must be a function. Received Promise { <pending> }
                     var div_accounts_height = await page.evaluate(x => {
                         let element = document.querySelector(x)[0];
@@ -275,6 +275,7 @@ class InstagramBot {
 
                     console.log(`INTERACTING WITH div_accounts_height:` + div_accounts_height);
 
+                    ///fdsafsdfsdf
                     // Заносим размеры в массив
                     height_scrolling.push(div_accounts_height);
                     // Если пользовательское значение больше реального или установлен 0, то собрать все аккаунты 
