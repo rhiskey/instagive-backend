@@ -261,44 +261,47 @@ class InstagramBot {
                 // Определяем размер (высоту) прокрутки div_accounts
                 // var div_accounts_height = div_accounts[0].scrollHeight;
 
-                var div_accounts_height = await page.evaluate(x => {
-                    let element = document.querySelector(x)[0];
-                    return Promise.resolve(element ? element.scrollHeight : '');
-                }, div_accounts);
-
-                // div_accounts_height.then(function (value) {
-                //     console.log(value);
-                // }, function (value) { });
-
-                console.log(`INTERACTING WITH div_accounts_height:` + div_accounts_height);
-
-                // Заносим размеры в массив
-                height_scrolling.push(div_accounts_height);
-                // Если пользовательское значение больше реального или установлен 0, то собрать все аккаунты 
-                if (user_count >= total_count || user_count == 0) {
-                    user_count = total_count;
-                }
-                if ((li_accounts.length != total_count) && (user_count > li_accounts.length) && (height_scrolling[0] != height_scrolling[4])) {
-                    
-                    var div_accounts_scroll = await page.evaluate(x => {
+                try {
+                    var div_accounts_height = await page.evaluate(x => {
                         let element = document.querySelector(x)[0];
-                        return Promise.resolve(element ? element.scrollBy(0, 500) : '');
-                    }, div_accounts);
-                    console.log(`INTERACTING WITH div_accounts_scroll:` + div_accounts_scroll);
+                        return Promise.resolve(element ? element.scrollHeight : '');
+                    }, div_accounts).then(height => { return height } );
 
-                    // div_accounts[0].scrollBy(0, 500); 
+                    // div_accounts_height.then(function (value) {
+                    //     console.log(value);
+                    // }, function (value) { });
 
-                    //  Если в массиве размеров скроллинга более 5 элементов, обнуляем
-                    if (height_scrolling.length == 5) {
-                        height_scrolling = [];
+                    console.log(`INTERACTING WITH div_accounts_height:` + div_accounts_height);
+
+                    // Заносим размеры в массив
+                    height_scrolling.push(div_accounts_height);
+                    // Если пользовательское значение больше реального или установлен 0, то собрать все аккаунты 
+                    if (user_count >= total_count || user_count == 0) {
+                        user_count = total_count;
                     }
-                    // UnhandledPromiseRejectionWarning: TypeError [ERR_INVALID_CALLBACK]: Callback must be a function. Received Promise { <pending> }
-                    var timeoutID = setTimeout(run_scrolling(page), speed_scrolling);
-                } else {
-                    clearTimeout(timeoutID);
-                    await start_parsing(page);
-                }
-                return false;
+                    if ((li_accounts.length != total_count) && (user_count > li_accounts.length) && (height_scrolling[0] != height_scrolling[4])) {
+
+                        var div_accounts_scroll = await page.evaluate(x => {
+                            let element = document.querySelector(x)[0];
+                            return Promise.resolve(element ? element.scrollBy(0, 500) : '');
+                        }, div_accounts);
+                        console.log(`INTERACTING WITH div_accounts_scroll:` + div_accounts_scroll);
+
+                        // div_accounts[0].scrollBy(0, 500); 
+
+                        //  Если в массиве размеров скроллинга более 5 элементов, обнуляем
+                        if (height_scrolling.length == 5) {
+                            height_scrolling = [];
+                        }
+                        // UnhandledPromiseRejectionWarning: TypeError [ERR_INVALID_CALLBACK]: Callback must be a function. Received Promise { <pending> }
+                        var timeoutID = setTimeout(run_scrolling(page), speed_scrolling);
+                    } else {
+                        clearTimeout(timeoutID);
+                        await start_parsing(page);
+                    }
+                    return false;
+
+                } catch (e) { console.log(e.message); }
             }
 
         } catch (e) {
