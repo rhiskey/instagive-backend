@@ -180,7 +180,7 @@ class InstagramBot {
             // СТАРТ РАБОТЫ СКРОЛЛИНГА + СБОР ДАННЫХ
             // ----------------------------------------------------------------------------------
             // run_scrolling(total_count, page, speed_scrolling, user_count, user_name, div_accounts, ul_accounts, li_accounts);
-            run_scrolling(page);
+            await run_scrolling(page);
             // ----------------------------------------------------------------------------------
             // ----------------------------------------------------------------------------------
             // ФУНКЦИЯ СБОРА ДАННЫХ
@@ -245,24 +245,26 @@ class InstagramBot {
                 //     })
                 // })
                 // let items = [];
-                // var previousHeight = await page.evaluate('document.page.scrollHeight');   
+                // // var previousHeight = await page.evaluate('document.page.scrollHeight');   
 
-                var div_accounts_height = await page.evaluate((div_accounts) => {
-                    const container = document.querySelector(div_accounts);
-                    // container.scrollTo(0, container.scrollHeight);
-                    // let scroll_height = document.body.scrollHeight;
-                    let div_accounts_height = container.scrollHeight;
-                    return div_accounts_height;
-                });
+                // var div_accounts_height = await page.evaluate((div_accounts) => {
+                //     const container = document.querySelector(div_accounts);
+                //     // container.scrollTo(0, container.scrollHeight);
+                //     // let scroll_height = document.body.scrollHeight;
+                //     let div_accounts_height = container.scrollHeight;
+                //     return div_accounts_height;
+                // });
+
+                // var div_accounts_height = await page.evaluate(e => e.scrollHeight, div_accounts)
 
 
                 // Определяем размер (высоту) прокрутки div_accounts
                 // var div_accounts_height = div_accounts[0].scrollHeight;
 
-                // var div_accounts_height = await page.evaluate(x => {
-                //     let element = document.querySelector(x)[0];
-                //     return Promise.resolve(element ? element.scrollHeight : '');
-                // }, div_accounts);
+                var div_accounts_height = await page.evaluate(x => {
+                    let element = document.querySelector(x)[0];
+                    return Promise.resolve(element ? element.scrollHeight : '');
+                }, div_accounts);
 
                 // div_accounts_height.then(function (value) {
                 //     console.log(value);
@@ -277,6 +279,7 @@ class InstagramBot {
                     user_count = total_count;
                 }
                 if ((li_accounts.length != total_count) && (user_count > li_accounts.length) && (height_scrolling[0] != height_scrolling[4])) {
+                    
                     var div_accounts_scroll = await page.evaluate(x => {
                         let element = document.querySelector(x)[0];
                         return Promise.resolve(element ? element.scrollBy(0, 500) : '');
@@ -293,7 +296,7 @@ class InstagramBot {
                     var timeoutID = setTimeout(run_scrolling(page), speed_scrolling);
                 } else {
                     clearTimeout(timeoutID);
-                    start_parsing(page);
+                    await start_parsing(page);
                 }
                 return false;
             }
