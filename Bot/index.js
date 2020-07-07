@@ -68,7 +68,8 @@ class InstagramBot {
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
-                '--headless'
+                '--headless',
+                '--disable-gpu'
             ],
 
         });
