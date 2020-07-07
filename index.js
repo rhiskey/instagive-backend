@@ -181,12 +181,12 @@ app.get('/getOrgID', function (req, res) {
 
 // возвращаем форму 
 app.get("/getfollowers", function (req, res) {
-  if (req.session.loggedin) {
+  // if (req.session.loggedin) {
   res.render("getfollowers.hbs");
-  } else {
+  // } else {
     res.sendFile(path.join(__dirname + '/login.html'));
   //   // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
-  }
+  // }
 
 });
 
