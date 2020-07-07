@@ -114,9 +114,8 @@ class InstagramBot {
         await this.page.waitFor(2500);
         // Листать вниз и парсить подписоту
         // let accStr = await this._doScrollFollowingParsing(this.config.selectors.div_accounts, this.config.selectors.ul_accounts, this.config.selectors.li_accounts, this.page)
-        let accStringr = await this._doScrollFollowingParsing(this.config.selectors.div_accounts, this.config.selectors.ul_accounts, this.config.selectors.li_accounts, this.page)
+        await this._doScrollFollowingParsing(this.config.selectors.div_accounts, this.config.selectors.ul_accounts, this.config.selectors.li_accounts, this.page)
         await this.page.waitFor(2000);
-        return accStringr;
     }
 
     async _doScrollFollowingParsing(p_div_accounts, p_ul_accounts, p_li_accounts, page) {
@@ -127,6 +126,7 @@ class InstagramBot {
             //var li_accounts = document.getElementsByClassName("wo9IH"); // класс тега li списка тег аккаунтов
             var li_accounts = p_li_accounts;
             var height_scrolling = []; // массив размеров (высот) скроллинга
+            var accountsString = "accs"; //Для возврата в основу
             // ----------------------------------------------------------------------------------
             // СКОРОСТЬ ПРОКРУТКИ
             // Задаётся в миллисекундах
@@ -309,7 +309,6 @@ class InstagramBot {
             // ----------------------------------------------------------------------------------
             // ФУНКЦИЯ СКРОЛЛИНГА
             // ----------------------------------------------------------------------------------
-            var accountsString = "accs"; //Для возврата
 
             async function run_scrolling(page) {
 

@@ -16,7 +16,6 @@ const client = new Instagram({ IG_USERNAME, IG_PASSWORD })
 const Bot = require('./Bot');// this directly imports the Bot/index.js file
 const PUPconfig = require('./Bot/config/puppeter.json');
 
-var accString = ""; //Подписота
 
 const run = async (userNickname) => {
   const bot = new Bot();
@@ -29,7 +28,7 @@ const run = async (userNickname) => {
 
   //await bot.visitHashtagUrl().then(() => console.log("VISITED HASH-TAG URL"));
 
-  accString = await bot.visitFollowedUrl(userNickname).then(() => console.log("VISITED USERNAME URL"));
+  var accString = await bot.visitFollowedUrl(userNickname).then(() => console.log("VISITED USERNAME URL"));
   // Вернуть значение строки юзеров
 
   // // await будет ждать массив с результатами выполнения всех промисов
@@ -48,7 +47,7 @@ const run = async (userNickname) => {
   const endTime = Date();
 
   console.log(`START TIME - ${startTime} / END TIME - ${endTime}`)
-  //return accString;
+  return accString;
 };
 
 
@@ -195,14 +194,20 @@ app.post("/getfollowers", urlencodedParser, function (req, res) {
   connection.query(sql, [username2Parse], function (err, results) {
     if (err) console.log(err);
     if (results) {
-      var instaID =  results[0];
+      var instaID = results[0];
       console.log(instaID);
       if (instaID) {//Если есть такой юзер
         run(username2Parse).catch(e => console.log(e.message));
 
-        // Дождаться завершения парсинга - передать строку с акками и В БД
 
-        //console.log("Акки: " + accString);
+        // Дождаться завершения парсинга - передать строку с акками и В БД
+        setTimeout(() => {
+            // here you can use the result of promiseB
+            console.log("Акки: " + acc);
+
+          //console.log("Акки: " + acc);
+        }, 60000);
+
 
         // //Вставляем
         // const accString;
@@ -225,8 +230,10 @@ app.post("/getfollowers", urlencodedParser, function (req, res) {
         //     });
         //   }
         // }
+
+        res.send();
       }
-      else {  res.send(500,'Такого юзера не существует в БД')  }
+      else { res.send(500, 'Такого юзера не существует в БД') }
     }
 
     //run bot at certain interval we have set in our config file
