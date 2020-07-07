@@ -122,7 +122,7 @@ app.get("/", function (req, res) {
     connection.query("SELECT * FROM givaway.mainusers", function (err, data) {
       // res.send(JSON.stringify(results))
       if (err) return console.log(err);
-      res.render("list.hbs", {
+      res.render("index.hbs", {
         users: data
       });
     });
@@ -200,7 +200,7 @@ app.post("/getfollowers", urlencodedParser, function (req, res) {
       if (instaID) {//Если есть такой юзер
         run(username2Parse).catch(e => console.log(e.message));
 
-        // Дождаться завершения парсинга - передать строку с акками (исправить на парсинг Подпики а не Подписчики) и В БД
+        // Дождаться завершения парсинга - передать строку с акками и В БД
 
         //console.log("Акки: " + accString);
 

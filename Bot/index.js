@@ -83,8 +83,33 @@ class InstagramBot {
         //https://www.instagram.com/username/following/
         await this.page.goto(`${this.config.base_url}/` + instagramNickname);
         await this.page.waitFor(2500);
-        // Жмём на кнопку "Подписок"
-        await this.page.click(this.config.selectors.user_followed_button);
+
+        // // Жмём на кнопку "Подписок"
+        // await this.page.click(this.config.selectors.user_followed_button); //Нужно кликнуть на [2]
+
+        //NEW
+        // Click on the following link
+        await this.page.evaluate(() => document.querySelector("a[href*='following']").click())
+
+        // // Wait for the followers modal and profiles
+        // await this.page.waitFor("div[role='presentation'] div[role='dialog'] div:nth-child(2) ul li");
+
+        // // Get followers that are in the list in the second div of that modal
+        // const people = await this.page.evaluate(() => {
+        //     return [...document.querySelectorAll("div[role='presentation'] div[role='dialog'] div:nth-child(2) ul li")]
+        //         .map(user => {
+
+        //             const profLink = user.querySelector("a[title]")
+        //             return {
+        //                 "name": profLink.textContent,
+        //                 "url": profLink.href
+        //             };
+
+        //         })
+        // })
+
+        // console.log(people)
+
         // await this.page.goto(`${this.config.base_url}/` + instagramNickname + '/following/');
         await this.page.waitFor(2500);
         // Листать вниз и парсить подписоту
@@ -190,6 +215,7 @@ class InstagramBot {
             // ФУНКЦИЯ СБОРА ДАННЫХ
             // ----------------------------------------------------------------------------------
             async function start_parsing(page) {
+                // var accounts = ul_accounts[0].innerHTML;
 
                 var accounts = await page.$eval(ul_accounts, node => node.innerHTML);
                 console.log(`INTERACTING WITH ul_accounts:` + accounts);
@@ -269,6 +295,8 @@ class InstagramBot {
                     //         }
                     //     }
                     // });
+
+
 
                 }
                 console.log('%cАккаунтов собрано: ' + result_count + ' шт.', 'color: #13a555; font-size:18px;');
