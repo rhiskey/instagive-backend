@@ -16,6 +16,8 @@ const client = new Instagram({ IG_USERNAME, IG_PASSWORD })
 const Bot = require('./Bot');// this directly imports the Bot/index.js file
 const PUPconfig = require('./Bot/config/puppeter.json');
 
+var accString = ""; //Подписота
+
 const run = async (userNickname) => {
   const bot = new Bot();
 
@@ -27,17 +29,26 @@ const run = async (userNickname) => {
 
   //await bot.visitHashtagUrl().then(() => console.log("VISITED HASH-TAG URL"));
 
-  await bot.visitFollowedUrl(userNickname).then(() => console.log("VISITED USERNAME URL"));
+  accString = await bot.visitFollowedUrl(userNickname).then(() => console.log("VISITED USERNAME URL"));
+  // Вернуть значение строки юзеров
 
+  // // await будет ждать массив с результатами выполнения всех промисов
+  // let results = await Promise.all([
+  //   fetch(url1),
+  //   fetch(url2)
+  // ]);
+
+  //Послать уведомление: занести в БД подписчиков?
+  // Если да - > функция запси В БД
 
   // await bot.unFollowUsers();
 
-  await bot.closeBrowser().then(() => console.log("BROWSER CLOSED"));
+  //await bot.closeBrowser().then(() => console.log("BROWSER CLOSED"));
 
   const endTime = Date();
 
   console.log(`START TIME - ${startTime} / END TIME - ${endTime}`)
-
+  //return accString;
 };
 
 
@@ -61,8 +72,6 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 // Initialize the app
 const app = express();
 
-app.set("view engine", "hbs");
-
 //Login Page
 app.use(session({
   secret: 'secret',
@@ -82,6 +91,31 @@ app.use(express.json());
 // NEW --------------
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.set("view engine", "hbs");
+
+// // СДЕЛАТЬ MVC и API
+// const userController = require("./controllers/userController.js");
+// const followersController = require("./controllers/followersController.js");
+// // определяем Router
+// const userRouter = express.Router();
+// const followersRouter = express.Router();
+
+
+// // определяем маршруты и их обработчики внутри роутера userRouter
+// userRouter.use("/create", userController.addUser);
+// userRouter.use("/insert", userController.insertUser);
+// userRouter.use("/delete", userController.deleteUser);
+// userRouter.use("/edit", userController.editUser);
+// userRouter.use("/", userController.index);
+// app.use("/", userRouter);
+
+// // определяем маршруты и их обработчики внутри роутера followersRouter
+// followersRouter.get("/about", followersController.about);
+// followersRouter.get("/", followersController.index);
+// app.use("/followers", followersRouter);
+
+// app.set("view engine", "hbs");
+
 // получение списка пользователей
 app.get("/", function (req, res) {
   if (req.session.loggedin) {
@@ -96,14 +130,6 @@ app.get("/", function (req, res) {
     res.sendFile(path.join(__dirname + '/login.html'));
     // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
   }
-  // res
-  // connection.connect();
-  // connection.query('SELECT * FROM givaway.mainusers', function (error, results, fields) {
-  //   if (error) throw error;
-  //   res.send(JSON.stringify(results))
-  //   //console.log(results);
-  // });
-
 
 });
 
@@ -130,13 +156,6 @@ app.post("/create", urlencodedParser, function (req, res) {
     res.redirect("/");
     // console.log(results);
   });
-  // const name = req.body.name;
-  // const age = req.body.age;
-  // pool.query("INSERT INTO users (name, age) VALUES (?,?)", [name, age], function(err, data) {
-  //   if(err) return console.log(err);
-  //   res.redirect("/");
-  // });
-
 
 });
 
@@ -158,7 +177,7 @@ app.get('/getOrgID', function (req, res) {
 // возвращаем форму 
 app.get("/getfollowers", function (req, res) {
   // if (req.session.loggedin) {
-    res.render("getfollowers.hbs");
+  res.render("getfollowers.hbs");
   // } else {
   //   res.sendFile(path.join(__dirname + '/login.html'));
   //   // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
@@ -171,39 +190,48 @@ app.post("/getfollowers", urlencodedParser, function (req, res) {
 
   if (!req.body) return res.sendStatus(400);
   const username2Parse = req.body.userNme;
+  //Получить id по нику, если ID есть - > Добавить в БД
+  const sql = "SELECT username, userid FROM givaway.mainusers WHERE username = ?";
+  connection.query(sql, [username2Parse], function (err, results) {
+    if (err) console.log(err);
+    if (results) {
+      var instaID =  results[0];
+      console.log(instaID);
+      if (instaID) {//Если есть такой юзер
+        run(username2Parse).catch(e => console.log(e.message));
 
-  //Парсер подписчиков по имени
+        // Дождаться завершения парсинга - передать строку с акками (исправить на парсинг Подпики а не Подписчики) и В БД
 
-  //Перейти на страницу инсты
-  // var instalink = "https://instagram.com/";
-  // var link = instalink + username2Parse;
+        //console.log("Акки: " + accString);
 
-  run(username2Parse).catch(e => console.log(e.message));
-  //run bot at certain interval we have set in our config file
-  // setInterval(run, PUPconfig.settings.run_every_x_hours * 3600000);
+        // //Вставляем
+        // const accString;
+        // var separator = ' ';
+        // var arrayOfStrings = accString.split(separator);
+        // //Для каждого элемента строки с разделителем пробел
+        // var i;
+        // for (i = 0; i < arrayOfStrings.length; i++) {
+        //   var nick = arrayOfStrings[i];
+        //   // Проверка на пустое и на "Подтвержденный"
+        //   if (nick && nick != "Подтвержденный") { //если не пустая
+        //     const sql = "INSERT INTO givaway.Follow (usernameFollower, followedid, linkFollower) VALUES (?, ?, ?) ";
+        //     var instalink = "https://instagram.com/";
+        //     var link = instalink + nick;
+        //     const data = [nick, results, link];
+        //     // connection.connect();
+        //     connection.query(sql, data, function (err, results) {
+        //       if (err) console.log(err);
+        //       // console.log(results);
+        //     });
+        //   }
+        // }
+      }
+      else {  res.send(500,'Такого юзера не существует в БД')  }
+    }
 
-
-  // var Insta = new InstaApi()
-
-  // Insta.getCsrfToken().then((csrf) => {
-  //   Insta.csrfToken = csrf;
-  // }).then(() => {
-  //   return Insta.auth(process.env.IG_USERNAME, process.env.IG_PASSWORD).then(sessionId => {
-  //     Insta.sessionId = sessionId
-
-  //     return Insta.getUserDataByUsername(username2Parse).then((t) => {
-  //       return Insta.getUserFollowers(t.graphql.user.id).then((t) => {
-  //         console.log(t); // - instagram followers for user "username-for-get"
-  //         res.send(t);
-  //       })
-  //     })
-
-  //   })
-  // }).catch(console.error);
-
-  // res.redirect("/getfollowers");
-  // res.send(JSON.stringify(results))
-
+    //run bot at certain interval we have set in our config file
+    // setInterval(run, PUPconfig.settings.run_every_x_hours * 3600000);
+  });
 });
 
 // возвращаем форму для добавления данных спонсоров
@@ -292,24 +320,6 @@ app.post("/followed", function (req, res) {
   if (!req.body) return res.sendStatus(400);
   const uid = req.body.userID;
   const name = req.body.userName;
-  // const pass = req.body.password;
-  // const user = name;
-  // Instagram
-  // instaObj.getFollowing(user).then(res => {
-  //   const userFullname = res.data;
-  //   console.log(userFullname);
-  //   // => Joie
-  // });
-  // client
-  //   .login()
-  //   .then(() => {
-  //     const followings = client
-  //       .getFollowings({ userId: uid, first: 50 }) // first - number of followings
-  //       .then(console.log)
-  //     // const followings = client.getFollowings({ userId: uid, first: 50 }) 
-  //     res.send(followings)
-  //   })
-  //res.redirect("/");
 
 });
 
@@ -466,7 +476,6 @@ app.post("/oauth", urlencodedParser, function (request, responseAuth) {
   );
 
 });
-
 
 
 // // Get AuthCode

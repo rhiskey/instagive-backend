@@ -45,23 +45,30 @@
             padding: 2px;
             font-size: 105%;
         }
-        textarea {border: none; width: 100%;}
 
+        textarea {
+            border: none;
+            width: 100%;
+        }
     </style>
 </head>
 
 <body>
     <div class="add-form">
-
-
         <form method="POST">
             <label>Username</label><br>
-
+            {{!--             
+            <input type="text" type="hidden" name="id" value="{{user.id}}" /> --}}
             <input type="text" name="userNme" class="field" /><br><br>
 
             <input type="submit" value="Отправить" />
         </form>
         <a href="/" class="btn btn-secondary">К списку раздач</a>
+
+        {{!-- <form method="GET">
+            <input type="textArea" name=" " class="field" /><br><br>
+
+        </form> --}}
     </div>
 
 

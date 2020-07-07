@@ -1,5 +1,7 @@
 //ig-bot/Bot/index.js
 
+var instaNick;
+
 class InstagramBot {
 
     constructor() {
@@ -31,7 +33,7 @@ class InstagramBot {
                 not_now_button: ".cmbtv",
                 hash_tags_base_class: ".EZdmt",
                 div_accounts: ".isgrP",
-                ul_accounts: ".jSC57  _6xe7A",
+                ul_accounts: ".jSC57._6xe7A",
                 li_accounts: ".PZuss"
             },
             speed_scrolling: 150,
@@ -76,6 +78,8 @@ class InstagramBot {
 
     async visitFollowedUrl(instagramNickname) {
         console.log('<<<< Currently Exploring >>>> ' + instagramNickname);
+
+        instaNick = instagramNickname;
         //https://www.instagram.com/username/following/
         await this.page.goto(`${this.config.base_url}/` + instagramNickname);
         await this.page.waitFor(2500);
@@ -84,9 +88,10 @@ class InstagramBot {
         // await this.page.goto(`${this.config.base_url}/` + instagramNickname + '/following/');
         await this.page.waitFor(2500);
         // Листать вниз и парсить подписоту
-        await this._doScrollFollowingParsing(this.config.selectors.div_accounts, this.config.selectors.ul_accounts, this.config.selectors.li_accounts, this.page)
+        // let accStr = await this._doScrollFollowingParsing(this.config.selectors.div_accounts, this.config.selectors.ul_accounts, this.config.selectors.li_accounts, this.page)
+        let accStringr = await this._doScrollFollowingParsing(this.config.selectors.div_accounts, this.config.selectors.ul_accounts, this.config.selectors.li_accounts, this.page)
         await this.page.waitFor(2000);
-        //await this._doScrollFollowingParsing(this.config.selectors.div_accounts, this.page)
+        return accStringr;
     }
 
     async _doScrollFollowingParsing(p_div_accounts, p_ul_accounts, p_li_accounts, page) {
@@ -143,14 +148,13 @@ class InstagramBot {
             } else {
                 // var total_count = document.getElementsByClassName("Y8-fY")[2].innerHTML;
 
-                // let total_count = await page.evaluate(() =>
-                //     document.querySelectorAll("Y8-fY")[2].innerHTML
-                // );
-
                 var total_count1 = await page.evaluate(x => {
-                    let element = document.getElementsByClassName(x)[2]; //<a class="-nal3 " href="/n0wadayyy/following/" tabindex="0"><span class="g47SY ">281</span> подписок</a>
+                    let element = document.getElementsByClassName(x)[2];
                     return Promise.resolve(element ? element.innerHTML : '');
                 }, "Y8-fY");
+
+                // var total_count1 = await page.$eval(".Y8-fY", node => node.innerHTML);
+
                 // Нужно достать элемент innerHTML внутри total_count который равен 281
                 ///"a.-nal3 > span.g47SY"
                 //<a class="-nal3 " href="/n0wadayyy/following/" tabindex="0"><span class="g47SY ">281</span> подписок</a>
@@ -179,7 +183,7 @@ class InstagramBot {
             // ----------------------------------------------------------------------------------
             // СТАРТ РАБОТЫ СКРОЛЛИНГА + СБОР ДАННЫХ
             // ----------------------------------------------------------------------------------
-            // run_scrolling(total_count, page, speed_scrolling, user_count, user_name, div_accounts, ul_accounts, li_accounts);
+            // run_scrolling();
             await run_scrolling(page);
             // ----------------------------------------------------------------------------------
             // ----------------------------------------------------------------------------------
@@ -187,30 +191,8 @@ class InstagramBot {
             // ----------------------------------------------------------------------------------
             async function start_parsing(page) {
 
-                // var accounts = await page.evaluate(x => {
-                //     let element = document.querySelector(x)[0];
-                //     return Promise.resolve(element ? element.innerHTML : '');
-                // }, ul_accounts);
-                // console.log(`INTERACTING WITH ul_accounts:` + accounts);
-
-                //Error: failed to find element matching selector ".jSC57  _6xe7A"
-                var accounts = await page.$eval(ul_accounts,
-                    e => {
-                        return e.innerHTML
-                    }
-                )
-                //jSC57  _6xe7A
+                var accounts = await page.$eval(ul_accounts, node => node.innerHTML);
                 console.log(`INTERACTING WITH ul_accounts:` + accounts);
-
-
-                // var accounts = await page.evaluate(x => {
-                //     let element = document.querySelector(x)[0];
-                //     return Promise.resolve(element ? element.innerHTML : '');
-                // }, ul_accounts);
-                // console.log(`INTERACTING WITH ul_accounts:` + accounts);
-
-                //var accounts = ul_accounts[0].innerHTML;
-
                 // ------------------------------------------------------------------------------
                 // Разбор ников аккаунтов
                 // ------------------------------------------------------------------------------
@@ -220,6 +202,12 @@ class InstagramBot {
                 if (result_nick != 'Подтвержденный') {
                     result_nick = result_nick.join(' ').match(/"[^"]+"/g).join(' ').match(/[^"]+/g).join('').match(/[^\s]+/g).join('\n');
                 }
+                // ------------------------------------------------------------------------------
+                // Разбор аватаров аккаунтов
+                // ------------------------------------------------------------------------------
+                var result_avatar = accounts.match(/src="[^"]+"/g);
+                result_avatar.splice(user_count);
+                result_avatar = result_avatar.join(' ').match(/"[^"]+"/g).join(' ').match(/[^"]+/g).join('').match(/[^\s]+/g).join('\n');
                 // ------------------------------------------------------------------------------
                 // Разбор имен аккаунтов
                 // ------------------------------------------------------------------------------
@@ -242,102 +230,97 @@ class InstagramBot {
                 }
                 if (user_name == true) {
                     console.log(result_nick_name);
+                    //Добавить в окошко /БД
+                    return result_nick_name;
                 } else {
                     console.log(result_nick);
+                    // console.log(result_avatar);
+
+                    //Добавить в окошко /БД
+                    // return result_nick;
+
+                    // //Получить id по нику, если ID есть - > Добавить в БД
+                    // const sql = 'SELECT username, userid FROM givaway.mainusers WHERE username= ?';
+                    // connection.query(sql, [instaNick], function (err, results) {
+                    //     if (err) console.log(err);
+
+                    //     if (results) { //Если есть такой юзер
+
+                    //         //Вставляем
+                    //         const accString = result_nick;
+                    //         var separator = ' ';
+                    //         var arrayOfStrings = accString.split(separator);
+                    //         //Для каждого элемента строки с разделителем пробел
+                    //         var i;
+                    //         for (i = 0; i < arrayOfStrings.length; i++) {
+                    //             var nick = arrayOfStrings[i];
+                    //             // Проверка на пустое и на "Подтвержденный"
+                    //             if (nick && nick != "Подтвержденный") { //если не пустая
+                    //                 const sql = "INSERT INTO givaway.Follow (usernameFollower, followedid, linkFollower) VALUES (?, ?, ?) ";
+                    //                 var instalink = "https://instagram.com/";
+                    //                 var link = instalink + nick;
+                    //                 const data = [nick, results, link];
+                    //                 // connection.connect();
+                    //                 connection.query(sql, data, function (err, results) {
+                    //                     if (err) console.log(err);
+                    //                     // console.log(results);
+                    //                 });
+                    //             }
+                    //         }
+                    //     }
+                    // });
+
                 }
                 console.log('%cАккаунтов собрано: ' + result_count + ' шт.', 'color: #13a555; font-size:18px;');
-                console.log('%cВыделите собранные имена аккаунтов выше и нажмите CTRL-C, чтобы скопировать.', 'color: #13a555; font-size:16px;');
+                //console.log('Аватары: '+result_avatar); //В БД
+                return result_nick;
+
+                // console.log('%cВыделите собранные имена аккаунтов выше и нажмите CTRL-C, чтобы скопировать.', 'color: #13a555; font-size:16px;');
 
             }
             // ----------------------------------------------------------------------------------
             // ФУНКЦИЯ СКРОЛЛИНГА
             // ----------------------------------------------------------------------------------
+            var accountsString = "accs"; //Для возврата
+
             async function run_scrolling(page) {
 
-                // await page.evaluate(async (div_accounts)=> {
-                //     await new Promise((resolve,reject) => {
-                //         var div_accounts_height = div_accounts[0].scrollHeight;
-                //         resolve();
-                //     })
-                // })
-                // let items = [];
-                // // var previousHeight = await page.evaluate('document.page.scrollHeight');   
-
-                // var div_accounts_height = await page.evaluate((div_accounts) => {
-                //     const container = document.querySelector(div_accounts);
-                //     // container.scrollTo(0, container.scrollHeight);
-                //     // let scroll_height = document.body.scrollHeight;
-                //     let div_accounts_height = container.scrollHeight;
-                //     return div_accounts_height;
-                // });
-
-                // var div_accounts_height = await page.evaluate(e => e.scrollHeight, div_accounts)
-
-
                 // Определяем размер (высоту) прокрутки div_accounts
-                //var div_accounts_height = div_accounts[0].scrollHeight;
-
-                try {
-
-                    // //Callback must be a function. Received Promise { <pending> }
-                    // var div_accounts_height = await page.evaluate(x => {
-                    //     let element = document.querySelector(x)[0];
-                    //     return Promise.resolve(element ? element.scrollHeight : '');
-                    // }, div_accounts).then(height => { return height });
-
-
-                    var div_accounts_height = await page.$eval(div_accounts,
+                var div_accounts_height = await page.$eval(div_accounts,
+                    e => {
+                        return e.scrollHeight
+                    }
+                )
+                console.log(`INTERACTING WITH div_accounts_height:` + div_accounts_height);
+                // Заносим размеры в массив
+                height_scrolling.push(div_accounts_height);
+                // Если пользовательское значение больше реального или установлен 0, то собрать все аккаунты 
+                if (user_count >= total_count || user_count == 0) {
+                    user_count = total_count;
+                }
+                if ((li_accounts.length != total_count) && (user_count > li_accounts.length) && (height_scrolling[0] != height_scrolling[4])) {
+                    // Скроллим
+                    await page.$eval(div_accounts,
                         e => {
-                            return e.scrollHeight
+                            return e.scrollBy(0, 500)
                         }
                     )
-
-                    // div_accounts_height.then(function (value) {
-                    //     console.log(value);
-                    // }, function (value) { });
-
-                    console.log(`INTERACTING WITH div_accounts_height:` + div_accounts_height);
-
-                    ///fdsafsdfsdf
-                    // Заносим размеры в массив
-                    height_scrolling.push(div_accounts_height);
-                    // Если пользовательское значение больше реального или установлен 0, то собрать все аккаунты 
-                    if (user_count >= total_count || user_count == 0) {
-                        user_count = total_count;
+                    //  Если в массиве размеров скроллинга более 5 элементов, обнуляем
+                    if (height_scrolling.length == 5) {
+                        height_scrolling = [];
                     }
-                    if ((li_accounts.length != total_count) && (user_count > li_accounts.length) && (height_scrolling[0] != height_scrolling[4])) {
-
-
-                        // var div_accounts_scroll = await page.evaluate(x => {
-                        //     let element = document.querySelector(x)[0];
-                        //     return Promise.resolve(element ? element.scrollBy(0, 500) : '');
-                        // }, div_accounts);
-                        // console.log(`INTERACTING WITH div_accounts_scroll:` + div_accounts_scroll);
-
-
-                        await page.$eval(div_accounts,
-                            e => {
-                                return e.scrollBy(0, 500)
-                            }
-                        )
-                        // console.log(`INTERACTING WITH div_accounts_scroll:` + div_accounts_scroll);
-
-                        // div_accounts[0].scrollBy(0, 500); 
-
-                        //  Если в массиве размеров скроллинга более 5 элементов, обнуляем
-                        if (height_scrolling.length == 5) {
-                            height_scrolling = [];
-                        }
-                        // Callback must be a function. Received 'run_scrolling(page)'
-                        var timeoutID = setTimeout(await run_scrolling(page), speed_scrolling);
-                    } else {
-                        clearTimeout(timeoutID);
-                        await start_parsing(page);
-                    }
-                    return false;
-
-                } catch (e) { console.log(e.message); }
+                    var timeoutID = setTimeout(run_scrolling, speed_scrolling, page);
+                } else {
+                    var page2pass = page;
+                    clearTimeout(timeoutID);
+                    accountsString = start_parsing(page2pass);
+                }
+                return false;
+                //return accountsString;
+                // } catch (e) { console.log(e.message); }
             }
+
+            return accountsString;
 
         } catch (e) {
             console.log('%cНажмите на странице Instagram на Подписчиков или Подписки, и запустите заново скрипт', 'color: #a22e1c; font-size:18px;');
