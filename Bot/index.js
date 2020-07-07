@@ -67,7 +67,8 @@ class InstagramBot {
             headless: this.config.settings.headless,
             args: [
                 '--no-sandbox',
-                '--disable-setuid-sandbox'
+                '--disable-setuid-sandbox',
+                '--headless'
             ],
 
         });
