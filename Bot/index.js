@@ -1,6 +1,21 @@
 //ig-bot/Bot/index.js
+var instaAccString;
 
+var parsed = false;
+const mysql = require('mysql2');
 var instaNick;
+
+var db_config = {
+    connectionLimit: 5,
+    host: "77.51.178.66",
+    user: "givawaytest",
+    database: "givaway",
+    password: "uINWTwfn8qUkqup8",
+}
+
+var connection;
+
+connection = mysql.createConnection(db_config);
 
 class InstagramBot {
 
@@ -114,7 +129,9 @@ class InstagramBot {
         await this.page.waitFor(2500);
         // Листать вниз и парсить подписоту
         // let accStr = await this._doScrollFollowingParsing(this.config.selectors.div_accounts, this.config.selectors.ul_accounts, this.config.selectors.li_accounts, this.page)
-        await this._doScrollFollowingParsing(this.config.selectors.div_accounts, this.config.selectors.ul_accounts, this.config.selectors.li_accounts, this.page)
+        var accStr = await this._doScrollFollowingParsing(this.config.selectors.div_accounts, this.config.selectors.ul_accounts, this.config.selectors.li_accounts, this.page).then(() => console.log("Start Parsing"));
+        //  console.log("---------------NEW------------"+ accStr);
+
         await this.page.waitFor(2000);
     }
 
@@ -218,7 +235,7 @@ class InstagramBot {
                 // var accounts = ul_accounts[0].innerHTML;
 
                 var accounts = await page.$eval(ul_accounts, node => node.innerHTML);
-                console.log(`INTERACTING WITH ul_accounts:` + accounts);
+                // console.log(`INTERACTING WITH ul_accounts:` + accounts);
                 // ------------------------------------------------------------------------------
                 // Разбор ников аккаунтов
                 // ------------------------------------------------------------------------------
@@ -259,49 +276,58 @@ class InstagramBot {
                     //Добавить в окошко /БД
                     return result_nick_name;
                 } else {
-                    console.log(result_nick);
+                    // console.log(result_nick);
                     // console.log(result_avatar);
+
+                    // Followers.setFollowed(result_nick);
+
+
+                    setAcc(result_nick);
+                    instaAccString = result_nick;
+                    //passResults(result_nick);
 
                     //Добавить в окошко /БД
                     // return result_nick;
 
-                    // //Получить id по нику, если ID есть - > Добавить в БД
-                    // const sql = 'SELECT username, userid FROM givaway.mainusers WHERE username= ?';
-                    // connection.query(sql, [instaNick], function (err, results) {
-                    //     if (err) console.log(err);
+                    const sql = "SELECT userid FROM givaway.mainusers WHERE username = ?";
+                    const data = instaNick;
+                    connection.query(sql, data, function (err, results) {
+                        if (err) console.log(err);
 
-                    //     if (results) { //Если есть такой юзер
-
-                    //         //Вставляем
-                    //         const accString = result_nick;
-                    //         var separator = ' ';
-                    //         var arrayOfStrings = accString.split(separator);
-                    //         //Для каждого элемента строки с разделителем пробел
-                    //         var i;
-                    //         for (i = 0; i < arrayOfStrings.length; i++) {
-                    //             var nick = arrayOfStrings[i];
-                    //             // Проверка на пустое и на "Подтвержденный"
-                    //             if (nick && nick != "Подтвержденный") { //если не пустая
-                    //                 const sql = "INSERT INTO givaway.Follow (usernameFollower, followedid, linkFollower) VALUES (?, ?, ?) ";
-                    //                 var instalink = "https://instagram.com/";
-                    //                 var link = instalink + nick;
-                    //                 const data = [nick, results, link];
-                    //                 // connection.connect();
-                    //                 connection.query(sql, data, function (err, results) {
-                    //                     if (err) console.log(err);
-                    //                     // console.log(results);
-                    //                 });
-                    //             }
-                    //         }
-                    //     }
-                    // });
+                        if (results) { //Если есть такой юзер
+                            console.log(results[0].userid);
+                            //Вставляем
+                            const accString = result_nick;
+                            var separator = '\n';
+                            var arrayOfStrings = accString.split(separator);
+                            //Для каждого элемента строки с разделителем пробел
+                            var i;
+                            for (i = 0; i < arrayOfStrings.length; i++) {
+                                var nick = arrayOfStrings[i];
+                                console.log("Parse: " + nick + '\n');
+                                // Проверка на пустое и на "Подтвержденный"
+                                if (nick && nick != "Подтвержденный") { //если не пустая
+                                    const sql = "INSERT INTO givaway.Follow (usernameFollower, followedid, linkFollower) VALUES (?, ?, ?) ";
+                                    var instalink = "https://instagram.com/";
+                                    var link = instalink + nick;
+                                    const data = [nick, results[0].userid, link];
+                                    // connection.connect();
+                                    connection.query(sql, data, function (err, results) {
+                                        if (err) console.log(err);
+                                        // console.log(results);
+                                    });
+                                }
+                            }
+                        }
+                    });
 
 
 
                 }
                 console.log('%cАккаунтов собрано: ' + result_count + ' шт.', 'color: #13a555; font-size:18px;');
                 //console.log('Аватары: '+result_avatar); //В БД
-                return result_nick;
+                return instaAccString;
+
 
                 // console.log('%cВыделите собранные имена аккаунтов выше и нажмите CTRL-C, чтобы скопировать.', 'color: #13a555; font-size:16px;');
 
@@ -319,6 +345,7 @@ class InstagramBot {
                     }
                 )
                 console.log(`INTERACTING WITH div_accounts_height:` + div_accounts_height);
+
                 // Заносим размеры в массив
                 height_scrolling.push(div_accounts_height);
                 // Если пользовательское значение больше реального или установлен 0, то собрать все аккаунты 
@@ -340,14 +367,21 @@ class InstagramBot {
                 } else {
                     var page2pass = page;
                     clearTimeout(timeoutID);
-                    accountsString = start_parsing(page2pass);
+                    accountsString = await start_parsing(page2pass);
+                    console.log("---------------Accounts:------------" + "\n" + accountsString);
+
+                    // if (accountsString) parsed = true;
+
+                    //Получить id по нику, если ID есть - > Добавить в БД
+
+
                 }
                 return false;
                 //return accountsString;
                 // } catch (e) { console.log(e.message); }
             }
-
-            return accountsString;
+            //console.log("---------------NEW------------" + "\n" + accountsString);
+            //return accountsString;
 
         } catch (e) {
             console.log('%cНажмите на странице Instagram на Подписчиков или Подписки, и запустите заново скрипт', 'color: #a22e1c; font-size:18px;');
@@ -485,7 +519,39 @@ class InstagramBot {
         await this.browser.close();
     }
 
+    // async setAcc(acc) {
+    //     instaAccString = acc;
+    // }
+
+    // async getAcc() { instaAccString };
 
 }
 
+const setAcc = acc => {
+    instaAccString = acc;
+}
+
+const getAcc = () => { return instaAccString; };
+
+// module.exports.result_nick;
+module.exports = { instaAccString };
+
 module.exports = InstagramBot;
+
+// var Followers = module.exports = {
+//     InstagramBot,
+//     setFollowed: function(acc) {
+//         instaAccString = acc;
+//     },
+//     getFollowed: function() {
+//         return instaAccString;
+//     }
+// }
+// class InstagramBot{
+//     constructor(instaAccString) {
+//         this.instaAccString = instaAccString;
+//     }
+//     accs(){
+//         return this.instaAccString;
+//     }
+// };

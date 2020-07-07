@@ -16,7 +16,9 @@ const client = new Instagram({ IG_USERNAME, IG_PASSWORD })
 const Bot = require('./Bot');// this directly imports the Bot/index.js file
 const PUPconfig = require('./Bot/config/puppeter.json');
 
+var instaAccs;
 
+// const resultNick = require('./Bot/')
 const run = async (userNickname) => {
   const bot = new Bot();
 
@@ -28,26 +30,30 @@ const run = async (userNickname) => {
 
   //await bot.visitHashtagUrl().then(() => console.log("VISITED HASH-TAG URL"));
 
-  var accString = await bot.visitFollowedUrl(userNickname).then(() => console.log("VISITED USERNAME URL"));
+  await bot.visitFollowedUrl(userNickname).then(() => console.log("VISITED USERNAME URL"));
   // Вернуть значение строки юзеров
-
+  
+  // console.log(bot.instaAccString);
   // // await будет ждать массив с результатами выполнения всех промисов
   // let results = await Promise.all([
   //   fetch(url1),
   //   fetch(url2)
   // ]);
 
+
   //Послать уведомление: занести в БД подписчиков?
   // Если да - > функция запси В БД
 
   // await bot.unFollowUsers();
 
-  //await bot.closeBrowser().then(() => console.log("BROWSER CLOSED"));
+  // await bot.closeBrowser().then(() => console.log("BROWSER CLOSED"));
 
   const endTime = Date();
 
   console.log(`START TIME - ${startTime} / END TIME - ${endTime}`)
-  return accString;
+  // instaAccs = bot.getAcc();
+  // console.log(instaAccs);
+  // return bot.instaAccString;
 };
 
 
@@ -175,18 +181,17 @@ app.get('/getOrgID', function (req, res) {
 
 // возвращаем форму 
 app.get("/getfollowers", function (req, res) {
-  // if (req.session.loggedin) {
+  if (req.session.loggedin) {
   res.render("getfollowers.hbs");
-  // } else {
-  //   res.sendFile(path.join(__dirname + '/login.html'));
+  } else {
+    res.sendFile(path.join(__dirname + '/login.html'));
   //   // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
-  // }
+  }
 
 });
 
 // получаем отправленные данные 
 app.post("/getfollowers", urlencodedParser, function (req, res) {
-
   if (!req.body) return res.sendStatus(400);
   const username2Parse = req.body.userNme;
   //Получить id по нику, если ID есть - > Добавить в БД
@@ -199,14 +204,13 @@ app.post("/getfollowers", urlencodedParser, function (req, res) {
       if (instaID) {//Если есть такой юзер
         run(username2Parse).catch(e => console.log(e.message));
 
+        // // Дождаться завершения парсинга - передать строку с акками и В БД
+        // setTimeout(() => {
+        //     // here you can use the result of promiseB
+        //     console.log("Акки: " + acc);
 
-        // Дождаться завершения парсинга - передать строку с акками и В БД
-        setTimeout(() => {
-            // here you can use the result of promiseB
-            console.log("Акки: " + acc);
-
-          //console.log("Акки: " + acc);
-        }, 60000);
+        //   //console.log("Акки: " + acc);
+        // }, 60000);
 
 
         // //Вставляем
@@ -239,6 +243,8 @@ app.post("/getfollowers", urlencodedParser, function (req, res) {
     //run bot at certain interval we have set in our config file
     // setInterval(run, PUPconfig.settings.run_every_x_hours * 3600000);
   });
+
+  // console.log();
 });
 
 // возвращаем форму для добавления данных спонсоров
