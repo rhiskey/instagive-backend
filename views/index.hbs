@@ -28,6 +28,8 @@
 
         .list table {
             color: #4d4d4d;
+            border: none;
+            border-collapse: collapse;
 
                 {
                     {
@@ -42,6 +44,13 @@
                     --
                 }
             }
+
+        }
+
+        table td {
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+            border-top: 1px solid #000;
         }
 
         .list input[type="text"],
@@ -63,17 +72,86 @@
             font-weight: bold;
             color: #ffffff;
         }
+
+        .bg-3 {
+            background-color: #ffffff;
+            color: #555555;
+        }
+
+        .container-fluid {
+            padding-top: 70px;
+            padding-bottom: 70px;
+        }
+
+        .navbar {
+            padding-top: 15px;
+        }
+
+        .navbar-nav li a:hover {
+            color: #1abc9c !important;
+        }
+
+        .active>a {
+            color: #1abc9c !important;
+            ;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+            position: -webkit-sticky;
+            /* Safari */
+            position: sticky;
+            top: 0;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        /* Change the link color to #111 (black) on hover */
+        li a:hover {
+            background-color: #111;
+        }
     </style>
 </head>
 
 <body>
     <div class="list">
         <h1>Список раздач</h1>
-        <p><a href="/create" class="btn btn-secondary">Добавить раздачу</a></p>
+
+        <nav class="navbar navbar-default">
+            <div class="container">
+
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li id="site"><a href="https://insta-give.herokuapp.com/">Вернуться на сайт</a></li>
+                        <li id="create"><a href="/create">Добавить раздачу</a></li>
+                        <li id="insert"><a href="/insert">Добавить спонсоров вручную</a></li>
+                        <li id="getfollowers"><a href="/getfollowers">Парсинг спонсоров</a></li>
+                        <li id="followed"><a href="/followed">Просмотр подписанных юзеров</a></li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        {{!-- <p><a href="/create" class="btn btn-secondary">Добавить раздачу</a></p>
         <p><a href="/insert" class="btn btn-secondary">Добавить спонсоров вручную</a></p>
         <p><a href="/getfollowers" class="btn btn-secondary">Парсинг спонсоров</a></p>
         <p><a href="/followed" class="btn btn-secondary">Просмотр подписанных юзеров</a></p>
-        <p><a href="https://insta-give.herokuapp.com/" class="btn btn-primary">Вернуться на сайт</a></p>
+        <p><a href="https://insta-give.herokuapp.com/" class="btn btn-primary">Вернуться на сайт</a></p> --}}
         <table>
             <tr>
                 <th>Username</th>
