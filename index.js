@@ -88,7 +88,7 @@ const app = express();
 //   resave: true,
 //   saveUninitialized: true
 // }));
-var expiryDate = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+var expiryDate = new Date(Date.now() + 12 * 60 * 60 * 1000); // 12 hour
 app.use(cookieSession ({
   name: 'session',
   keys: ['key1', 'key2'],
