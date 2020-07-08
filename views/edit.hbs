@@ -19,6 +19,8 @@
         }
 
         .edit-form input[type="text"],
+        .edit-form input[type="url"],
+
         .edit-form input[type="number"] {
             width: 100%;
             padding: 15px;
@@ -44,19 +46,19 @@
     <div class="edit-form">
         <h1>Редактирование раздачи</h1>
         <form action="/edit" method="POST">
-            <input type="text" type="hidden" name="id" value="{{user.id}}" />
+            <input type="hidden" name="id" value="{{user.id}}" readonly />
             <label>Имя</label><br>
             <input type="text" name="userName" value="{{user.username}}" /><br><br>
             <label>Инфо раздачи</label><br>
             <input type="text" name="userGiveinfo" value="{{user.giveinfo}}" /><br><br>
             <label>Ссылка на аватар</label><br>
-            <input type="text" name="userAvatar" value="{{user.avatar}}" /><br><br>
+            <input type="url" name="userAvatar" value="{{user.avatar}}" /><br><br>
             <label>Ссылка на профиль</label><br>
-            <input type="text" name="userLink" value="{{user.link}}" /><br><br>
+            <input type="url" name="userLink" value="{{user.link}}" /><br><br>
             <label>ID</label><br>
-            <input type="text" name="userID" value="{{user.userid}}" /><br><br>
-            <label>Show?</label><br>
-            <input type="text" name="show" value="{{user.showgive}}" >
+            <input type="text" name="userID" value="{{user.userid}}" readonly /><br><br>
+            <label>Show? 0-скрыть, 1-показать</label><br>
+            <input type="number" name="show" value="{{user.showgive}}" min="0" max="1" >
             {{!-- <input type="text" name="userID" value="{{user.userid}}" /><br><br> --}}
             <input type="submit" value="Отправить" />
         </form>

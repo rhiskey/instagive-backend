@@ -141,6 +141,26 @@ app.get("/", function (req, res) {
 
 });
 
+// //Изменение видимости раздач
+// app.post("/", urlencodedParser, function (req, res) {
+
+//   if (!req.body) return res.sendStatus(400);
+//   const name = req.body.userName;
+//   const link = req.body.userLink;
+//   const info = req.body.userGiveinfo;
+//   const avatar = req.body.userAvatar;
+//   const uid = req.body.userID;
+//   const id = req.body.id;
+//   const show = req.body.showgive;
+//   // if(show==)
+
+//   connection.query("UPDATE givaway.mainusers SET username=?, giveinfo=?, avatar=?, link=?, userid=?, showgive=?  WHERE id=?;", [name, info, avatar, link, uid, show, id], function (err, data) {
+//     if (err) return console.log(err);
+//     res.redirect("/");
+//   });
+
+// });
+
 // возвращаем форму для добавления данных
 app.get("/create", function (req, res) {
   if (req.session.loggedin) {
@@ -151,20 +171,38 @@ app.get("/create", function (req, res) {
   }
 
 });
+
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
+}
 // получаем отправленные данные и добавляем их в БД 
 app.post("/create", urlencodedParser, function (req, res) {
 
   if (!req.body) return res.sendStatus(400);
   const sql = "INSERT INTO givaway.mainusers (username, link, giveinfo, avatar, userid) VALUES (?, ?, ?, ?, ?) ";
   //Generate Unique index 10 symbols
-  const userID = Date.now(); //1576996323453
-  const data = [req.body.userName, req.body.userLink, req.body.userGiveinfo, req.body.userAvatar, userID];
+  //const userID = Date.now(); //1576996323453
+  const userID = getRandomIntInclusive(1, 9999999999999);
+  var instalink = "https://instagram.com/";
+  var link = instalink + req.body.userName;
+  const data = [req.body.userName, link, req.body.userGiveinfo, req.body.userAvatar, userID];
   //const data = [req.body.userName, req.body.userLink, req.body.userGiveinfo, req.body.userAvatar, req.body.userID];
   // connection.connect();
   connection.query(sql, data, function (err, results) {
     if (err) console.log(err);
-    req.send(JSON.stringify(results))
+    // req.send(JSON.stringify(results))
+
+    const username2Parse = req.body.userName;
+    //Старт парсера
+    run(username2Parse).catch(e => console.log(e.message));
+
+    // // Дождаться завершения парсинга - передать строку с акками и В БД
+
     res.redirect("/");
+
+    //res.redirect("/");
     // console.log(results);
   });
 
@@ -220,35 +258,6 @@ app.post("/getfollowers", urlencodedParser, function (req, res) {
         run(username2Parse).catch(e => console.log(e.message));
 
         // // Дождаться завершения парсинга - передать строку с акками и В БД
-        // setTimeout(() => {
-        //     // here you can use the result of promiseB
-        //     console.log("Акки: " + acc);
-
-        //   //console.log("Акки: " + acc);
-        // }, 60000);
-
-
-        // //Вставляем
-        // const accString;
-        // var separator = ' ';
-        // var arrayOfStrings = accString.split(separator);
-        // //Для каждого элемента строки с разделителем пробел
-        // var i;
-        // for (i = 0; i < arrayOfStrings.length; i++) {
-        //   var nick = arrayOfStrings[i];
-        //   // Проверка на пустое и на "Подтвержденный"
-        //   if (nick && nick != "Подтвержденный") { //если не пустая
-        //     const sql = "INSERT INTO givaway.Follow (usernameFollower, followedid, linkFollower) VALUES (?, ?, ?) ";
-        //     var instalink = "https://instagram.com/";
-        //     var link = instalink + nick;
-        //     const data = [nick, results, link];
-        //     // connection.connect();
-        //     connection.query(sql, data, function (err, results) {
-        //       if (err) console.log(err);
-        //       // console.log(results);
-        //     });
-        //   }
-        // }
 
         res.redirect("/");
       }
@@ -345,6 +354,37 @@ app.post("/delete/:id", function (req, res) {
   });
 });
 
+// получаем id изменяемой раздачи и изменяем видимость
+app.post("/visible/:id", function (req, res) {
+  const id = req.params.id;
+  const show = 1;
+  connection.query("UPDATE givaway.mainusers SET showgive=? WHERE id=?", [show, id], function (err, data) {
+    if (err) return console.log(err);
+    res.redirect("/");
+  });
+});
+
+app.post("/hide/:id", function (req, res) {
+  const id = req.params.id;
+  const show = 0;
+  connection.query("UPDATE givaway.mainusers SET showgive=? WHERE id=?", [show, id], function (err, data) {
+    if (err) return console.log(err);
+    res.redirect("/");
+  });
+});
+//Очищаем фолловеров
+app.post("/clearfollowed/:id", function (req, res) {
+  const id = req.params.id;
+  //Get userid
+  connection.query("SELECT userid FROM givaway.mainusers WHERE id =?",[id], function (err, results) {
+    if (err) console.log(err);
+    var flid = results[0].userid;
+    connection.query("DELETE FROM givaway.Follow WHERE followedid=?", [flid], function (err, data) {
+      if (err) return console.log(err);
+      res.redirect("/");
+    });
+  });
+});
 // получаем аккаунты, на которых подписан юзер
 app.post("/followed", function (req, res) {
   if (!req.body) return res.sendStatus(400);
