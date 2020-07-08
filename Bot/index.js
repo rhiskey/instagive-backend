@@ -45,7 +45,8 @@ class InstagramBot {
                 user_unfollow_button: "span.vBF20 > button._5f5mN",
                 user_unfollow_confirm_button: "div.mt3GC > button.aOOlW.-Cab_",
                 user_followed_button: ".Y8-fY a",
-                not_now_button: ".cmbtv",
+                not_now_button_old: ".cmbtv",
+                not_now_button: ".aOOlW.HoLwm",
                 hash_tags_base_class: ".EZdmt",
                 div_accounts: ".isgrP",
                 ul_accounts: ".jSC57._6xe7A",
@@ -99,10 +100,10 @@ class InstagramBot {
         //Close Turn On Notification modal after login
         await this.page.waitFor(2500);
         //  waiting for selector ".cmbtv" failed: timeout 30000ms exceeded
-        
-        // await this.page.waitForSelector(this.config.selectors.not_now_button);
-        // await this.page.click(this.config.selectors.not_now_button);
-        // await this.page.waitFor(2500);
+
+        await this.page.waitForSelector(this.config.selectors.not_now_button);
+        await this.page.click(this.config.selectors.not_now_button);
+        await this.page.waitFor(2500);
     }
 
     async visitFollowedUrl(instagramNickname) {
@@ -118,6 +119,8 @@ class InstagramBot {
 
         //NEW
         // Click on the following link
+        //Evaluation failed: TypeError: Cannot read property 'click' of null
+        await this.page.waitForSelector("a[href*='following']");
         await this.page.evaluate(() => document.querySelector("a[href*='following']").click())
 
         // // Wait for the followers modal and profiles
