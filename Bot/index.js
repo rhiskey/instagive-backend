@@ -76,7 +76,7 @@ class InstagramBot {
     }
 
     async visitInstagram() {
-        await this.page.goto(this.config.base_url, { timeout: 60000 });
+        await this.page.goto(this.config.base_url, { waitUntil: 'load', timeout: 60000 });
         await this.page.waitFor(2500);
 
         //Register
@@ -94,8 +94,10 @@ class InstagramBot {
 
         await this.page.waitForSelector(this.config.selectors.login_button);
         await this.page.click(this.config.selectors.login_button);
+
         await this.page.waitForNavigation();
         //Close Turn On Notification modal after login
+        await this.page.waitFor(2500);
         await this.page.waitForSelector(this.config.selectors.not_now_button);
         await this.page.click(this.config.selectors.not_now_button);
         await this.page.waitFor(2500);
@@ -106,7 +108,7 @@ class InstagramBot {
 
         instaNick = instagramNickname;
         //https://www.instagram.com/username/following/
-        await this.page.goto(`${this.config.base_url}/` + instagramNickname);
+        await this.page.goto(`${this.config.base_url}/` + instagramNickname, { waitUntil: 'load', timeout: 60000 });
         await this.page.waitFor(2500);
 
         // // Жмём на кнопку "Подписок"
