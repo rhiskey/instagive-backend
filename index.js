@@ -32,7 +32,7 @@ const run = async (userNickname) => {
 
   await bot.visitFollowedUrl(userNickname).then(() => console.log("VISITED USERNAME URL"));
   // Вернуть значение строки юзеров
-  
+
   // console.log(bot.instaAccString);
   // // await будет ждать массив с результатами выполнения всех промисов
   // let results = await Promise.all([
@@ -183,12 +183,20 @@ app.get('/getOrgID', function (req, res) {
 
 // возвращаем форму 
 app.get("/getfollowers", function (req, res) {
-   if (req.session.loggedin) {
-  res.render("getfollowers.hbs");
-   } else {
+  if (req.session.loggedin) {
+    //res.render("getfollowers.hbs");
+    const sql = "SELECT username FROM givaway.mainusers";
+    connection.query(sql, function (err, results) {
+      if (err) console.log(err);
+      // Pass the DB result to the template
+      // res.render('newProject', { dropdownVals: result })
+      res.render("getfollowers.hbs", { dropdownVals: results });
+      
+    })
+  } else {
     res.sendFile(path.join(__dirname + '/login.html'));
-  //   // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
-   }
+    //   // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
+  }
 
 });
 

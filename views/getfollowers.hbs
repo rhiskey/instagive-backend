@@ -2,24 +2,24 @@
 <html>
 
 <head>
-    <title>TEST</title>
+    <title>Парсер</title>
     <meta charset="utf-8" />
     <style>
-        .add-form {
+        .control-form {
             width: 300px;
             margin: 0 auto;
             font-family: Tahoma, Geneva, sans-serif;
         }
 
-        .add-form h1 {
+        .control-form h1 {
             text-align: center;
             color: #4d4d4d;
             font-size: 24px;
             padding: 20px 0 20px 0;
         }
 
-        .add-form input[type="text"],
-        .add-form input[type="number"] {
+        .control-form input[type="text"],
+        .control-form input[type="number"] {
             width: 100%;
             padding: 15px;
             border: 1px solid #dddddd;
@@ -27,7 +27,7 @@
             box-sizing: border-box;
         }
 
-        .add-form input[type="submit"] {
+        .control-form input[type="submit"] {
             width: 100%;
             padding: 15px;
             background-color: #535b63;
@@ -54,14 +54,27 @@
 </head>
 
 <body>
-    <div class="add-form">
+    <div class="control-form">
         <form method="POST">
-            <label>Username</label><br>
+            <label>Выберите аккаунт для парсинга</label><br>
+
+            <select class="control-form" id="sel1">
+                {{!-- <% for(var i=0; i < dropdownVals.length; i++) { %>
+                <option><%= dropdownVals[i] %></option>
+                <% } %> --}}
+                {{#each dropdownVals}}
+                <option value={{this.username}}>{{this.username}}</option>
+                {{/each}}
+
+            </select>
+
+            <br><br>
+
             {{!--             
             <input type="text" type="hidden" name="id" value="{{user.id}}" /> --}}
-            <input type="text" name="userNme" class="field" /><br><br>
+            {{!-- <input type="text" name="userNme" class="field" /><br><br> --}}
 
-            <input type="submit" value="Отправить" />
+            <input type="submit" value="Начать парсинг" />
         </form>
         <a href="/" class="btn btn-secondary">К списку раздач</a>
 
@@ -70,7 +83,7 @@
 
         </form> --}}
     </div>
-    
+
     <p id="myLog"></p>
 
 </body>
