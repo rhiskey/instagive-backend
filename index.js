@@ -428,6 +428,17 @@ app.get('/mainusers', function (req, res) {
   //connection.end();
 });
 
+app.get('/onlyshow', function (req, res) {
+  // Проверка авторизации, отправлять POST запрос сюда с данными авторизации
+  connection.connect();
+  connection.query('SELECT * FROM givaway.mainusers WHERE showgive = 1', function (error, results, fields) {
+    if (error) throw error;
+    res.send(JSON.stringify(results))
+    //console.log(results);
+  });
+  //connection.end();
+});
+
 app.get('/alljoin', function (req, res) {
   // Проверка авторизации, отправлять POST запрос сюда с данными авторизации
   connection.connect();
