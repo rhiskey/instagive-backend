@@ -89,15 +89,18 @@ class InstagramBot {
         });
         await this.page.click(this.config.selectors.username_field);
         await this.page.keyboard.type(this.config.username);
-        
+
+        await this.page.waitFor(2500);
         await this.page.waitForSelector(this.config.selectors.password_field);
         await this.page.click(this.config.selectors.password_field);
         await this.page.keyboard.type(this.config.password);
 
-        await this.page.waitForSelector(this.config.selectors.login_button);
+        await this.page.waitFor(2500);
+        await this.page.waitForSelector(this.config.selectors.login_button);q
         await this.page.click(this.config.selectors.login_button);
-
+        
         await this.page.waitForNavigation();
+        await this.page.waitFor(2500);
         //Close Turn On Notification modal after login
         await this.page.waitForSelector(this.config.selectors.not_now_button);
         await this.page.click(this.config.selectors.not_now_button);
