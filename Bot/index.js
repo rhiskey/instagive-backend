@@ -98,9 +98,11 @@ class InstagramBot {
         await this.page.waitForNavigation();
         //Close Turn On Notification modal after login
         await this.page.waitFor(2500);
-        await this.page.waitForSelector(this.config.selectors.not_now_button);
-        await this.page.click(this.config.selectors.not_now_button);
-        await this.page.waitFor(2500);
+        //  waiting for selector ".cmbtv" failed: timeout 30000ms exceeded
+        
+        // await this.page.waitForSelector(this.config.selectors.not_now_button);
+        // await this.page.click(this.config.selectors.not_now_button);
+        // await this.page.waitFor(2500);
     }
 
     async visitFollowedUrl(instagramNickname) {
