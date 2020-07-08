@@ -103,7 +103,7 @@ class InstagramBot {
         //Close Turn On Notification modal after login
         // //  waiting for selector ".cmbtv" failed: timeout 30000ms exceeded
 
-        try {
+        try { //Save login settings?
             await this.page.waitForSelector(this.config.selectors.not_now_button);
             await this.page.click(this.config.selectors.not_now_button);
             await this.page.waitFor(2500);
@@ -273,7 +273,7 @@ class InstagramBot {
                 var result_nick = accounts.match(/title="[^"]+"/g);
                 result_nick.splice(user_count);
                 var result_count = result_nick.length;
-                if (result_nick != 'Подтвержденный') {
+                if (result_nick != 'Подтвержденный' || result_nick != 'Verified') {
                     result_nick = result_nick.join(' ').match(/"[^"]+"/g).join(' ').match(/[^"]+/g).join('').match(/[^\s]+/g).join('\n');
                 }
                 // ------------------------------------------------------------------------------
@@ -326,7 +326,7 @@ class InstagramBot {
                         if (err) console.log(err);
 
                         if (results) { //Если есть такой юзер
-                            console.log(results[0].userid);
+                            console.log("ID аккаунта организатора: " + results[0].userid);
                             //Вставляем
                             const accString = result_nick;
                             var separator = '\n';
@@ -337,7 +337,7 @@ class InstagramBot {
                                 var nick = arrayOfStrings[i];
                                 console.log("Parse: " + nick + '\n');
                                 // Проверка на пустое и на "Подтвержденный"
-                                if (nick && nick != "Подтвержденный") { //если не пустая
+                                if (nick && nick != "Подтвержденный" && nick != "Verified") { //если не пустая
                                     const sql = "INSERT INTO givaway.Follow (usernameFollower, followedid, linkFollower) VALUES (?, ?, ?) ";
                                     var instalink = "https://instagram.com/";
                                     var link = instalink + nick;

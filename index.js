@@ -51,6 +51,8 @@ const run = async (userNickname) => {
   const endTime = Date();
 
   console.log(`START TIME - ${startTime} / END TIME - ${endTime}`)
+
+  await bot.closeBrowser().then(() => console.log("BROWSER CLOSED"));
   // instaAccs = bot.getAcc();
   // console.log(instaAccs);
   // return bot.instaAccString;
@@ -235,7 +237,7 @@ app.post("/getfollowers", urlencodedParser, function (req, res) {
         //   }
         // }
 
-        res.send();
+        res.redirect("/");
       }
       else { res.send(500, 'Такого юзера не существует в БД') }
     }
