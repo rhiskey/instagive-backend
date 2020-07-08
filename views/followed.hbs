@@ -42,8 +42,8 @@
 
 <body>
     <div class="add-form">
-    <h1>Followed</h1>
-    <form method="POST">
+    <h1>Просмотр подписанных юзеров</h1>
+    {{!-- <form method="POST">
         <label>Никнейм</label><br>
         <input type="text" name="userName" class="field" /><br><br>
         {{!-- <label>Пароль</label><br>
@@ -51,7 +51,32 @@
         <label>ID</label><br>
         <input type="text" name="userID" class="field" /><br><br>
         <input type="submit" value="Отправить" />
-    </form>
+    </form> --}}
+            <table>
+            <tr>
+                <th>Username</th>
+                {{!-- <th>Link</th>
+                <th>Avatar</th> --}}
+                <th>Followed</th>
+
+                <th></th>
+            </tr>
+            {{#each users}}
+            <tr>
+                <td>{{this.usernameFollower}}</td>
+                {{!-- <td>{{this.linkFollower}}</td>
+                <td>{{this.avatarFollower}}</td> --}}
+                <td>{{this.followedid}}</td>
+
+                <td>
+                    {{!-- <a href="/edit/{{this.id}}" class="btn btn-secondary">Редактировать</a>| --}}
+                    {{!-- <form action="delete/{{this.id}}" method="POST" style="display:inline;">
+                        <input type="submit" value="Delete" />
+                    </form> --}}
+                </td>
+            </tr>
+            {{/each}}
+        </table>
     <a href="/" class="btn btn-secondary">К списку раздач</a>
     </div>
 </body>

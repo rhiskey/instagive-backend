@@ -191,7 +191,7 @@ app.get("/getfollowers", function (req, res) {
       // Pass the DB result to the template
       // res.render('newProject', { dropdownVals: result })
       res.render("getfollowers.hbs", { dropdownVals: results });
-      
+
     })
   } else {
     res.sendFile(path.join(__dirname + '/login.html'));
@@ -349,11 +349,20 @@ app.post("/followed", function (req, res) {
 
 // возвращаем форму для поиска подписанных
 app.get("/followed", function (req, res) {
-  // if (req.session.loggedin) {
-  res.render("followed.hbs");
-  // } else {
-  // res.sendFile(path.join(__dirname + '/login.html'));
-  // }
+  if (req.session.loggedin) {
+    const sql = "SELECT id, usernameFollower, linkFollower, LEFT(avatarFollower, 256), useridFollower, followedid FROM givaway.Follow LIMIT 1000";
+    connection.query(sql, function (err, results) {
+      if (err) console.log(err);
+      // Pass the DB result to the template
+      // res.render('newProject', { dropdownVals: result })
+      res.render("followed.hbs", { users: results });
+
+    })
+    // res.render("followed.hbs");
+
+  } else {
+    res.sendFile(path.join(__dirname + '/login.html'));
+  }
 
 });
 // NEW --------------
