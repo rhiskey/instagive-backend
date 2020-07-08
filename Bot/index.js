@@ -52,7 +52,9 @@ class InstagramBot {
                 div_accounts: ".isgrP",
                 ul_accounts: ".jSC57._6xe7A",
                 li_accounts: ".PZuss",
-                its_me_button: ""
+                its_me_button: ".", //TODO
+                send_security_button: ".5f5mN.jIbKX.KUBKM.yZn4P",
+                send_security_span: ".idhGk._1OSdk",
             },
             speed_scrolling: 150,
             user_name: false, // true
