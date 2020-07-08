@@ -7,6 +7,8 @@ const cors = require('cors')
 var session = require('express-session');
 const axios = require('axios')
 const httpRequest = require('request');
+var cookieSession = require('cookie-session')
+
 const Instagram = require('instagram-web-api')
 const { IG_USERNAME, IG_PASSWORD } = process.env
 const client = new Instagram({ IG_USERNAME, IG_PASSWORD })
@@ -81,11 +83,27 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 const app = express();
 
 //Login Page
-app.use(session({
-  secret: 'secret',
-  resave: true,
-  saveUninitialized: true
-}));
+// app.use(session({
+//   secret: '2C44-4D45-FdfpQ38S',
+//   resave: true,
+//   saveUninitialized: true
+// }));
+var expiryDate = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+app.use(cookieSession ({
+  name: 'session',
+  keys: ['key1', 'key2'],
+  
+  cookie: {
+    secure: true,
+    httpOnly: true,
+    domain: 'dry-plains-18498.herokuapp.com',
+    path: 'page/session',
+    expires: expiryDate
+  }
+})
+);
+
+//app.use(express.cookieDecoder());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -376,7 +394,7 @@ app.post("/hide/:id", function (req, res) {
 app.post("/clearfollowed/:id", function (req, res) {
   const id = req.params.id;
   //Get userid
-  connection.query("SELECT userid FROM givaway.mainusers WHERE id =?",[id], function (err, results) {
+  connection.query("SELECT userid FROM givaway.mainusers WHERE id =?", [id], function (err, results) {
     if (err) console.log(err);
     var flid = results[0].userid;
     connection.query("DELETE FROM givaway.Follow WHERE followedid=?", [flid], function (err, data) {
