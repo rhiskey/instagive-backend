@@ -356,7 +356,7 @@ app.post("/edit", urlencodedParser, function (req, res) {
   const show = req.body.showgive;
   // if(show==)
 
-  connection.query("UPDATE givaway.mainusers SET username=?, giveinfo=?, avatar=?, link=?, userid=?, showgive=?  WHERE id=?;", [name, info, avatar, link, uid, show, id], function (err, data) {
+  connection.query("UPDATE givaway.mainusers SET username=?, giveinfo=?, avatar=?, link=?, userid=? WHERE id=?;", [name, info, avatar, link, uid, id], function (err, data) {
     if (err) return console.log(err);
     res.redirect("/");
   });
