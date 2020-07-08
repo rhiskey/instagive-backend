@@ -52,7 +52,7 @@ const run = async (userNickname) => {
 
   console.log(`START TIME - ${startTime} / END TIME - ${endTime}`)
 
-  //Потенциальная утечка, нужно включить, но после парсинга
+  //Потенциальная утечка, нужно закрыть браузер, но после парсинга
   // await bot.closeBrowser().then(() => console.log("BROWSER CLOSED"));
 
   // instaAccs = bot.getAcc();

@@ -44,17 +44,17 @@
     <div class="edit-form">
         <h1>Редактирование раздачи</h1>
         <form action="/edit" method="POST">
-            <input type="text" type="hidden" name="id" value="{{user.id}}" />
+            <input type="text" type="hidden" name="id" value="{{user.id}}"  />
             <label>Имя</label><br>
-            <input type="text" name="userName" value="{{user.userName}}" class="field" /><br><br>
+            <input type="text" name="userName" value="{{user.username}}"  /><br><br>
             <label>Инфо раздачи</label><br>
-            <input type="text" name="userGiveinfo" value="{{user.userGiveinfo}}" class="field" /><br><br>
+            <input type="text" name="userGiveinfo" value="{{user.giveinfo}}"  /><br><br>
             <label>Ссылка на аватар</label><br>
-            <input type="text" name="userAvatar" value="{{user.userAvatar}}" class="field" /><br><br>
+            <input type="text" name="userAvatar" value="{{user.avatar}}"  /><br><br>
             <label>Ссылка на профиль</label><br>
-            <input type="text" name="userLink" value="{{user.userLink}}" class="field" /><br><br>
+            <input type="text" name="userLink" value="{{user.link}}" /><br><br>
             <label>ID в инстаграм</label><br>
-            <input type="text" name="userID" value="{{user.userID}}" class="field" /><br><br>
+            <input type="text" name="userID" value="{{user.userid}}" /><br><br>
             <input type="submit" value="Отправить" />
         </form>
         <a href="/" class="btn btn-secondary">К списку раздач</a>
