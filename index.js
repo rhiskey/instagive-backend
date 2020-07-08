@@ -203,7 +203,8 @@ app.get("/getfollowers", function (req, res) {
 // получаем отправленные данные 
 app.post("/getfollowers", urlencodedParser, function (req, res) {
   if (!req.body) return res.sendStatus(400);
-  const username2Parse = req.body.userNme;
+  const username2Parse = req.body.userName;
+  //console.log(req.body);
   //Получить id по нику, если ID есть - > Добавить в БД
   const sql = "SELECT username, userid FROM givaway.mainusers WHERE username = ?";
   connection.query(sql, [username2Parse], function (err, results) {

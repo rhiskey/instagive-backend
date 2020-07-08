@@ -55,15 +55,15 @@
 
 <body>
     <div class="control-form">
-        <form method="POST">
+        <form method="POST" action="getfollowers">
             <label>Выберите аккаунт для парсинга</label><br>
 
-            <select class="control-form" id="sel1">
+            <select class="control-form" id="sel1" name="userName">
                 {{!-- <% for(var i=0; i < dropdownVals.length; i++) { %>
                 <option><%= dropdownVals[i] %></option>
                 <% } %> --}}
                 {{#each dropdownVals}}
-                <option value={{this.username}}>{{this.username}}</option>
+                <option value={{this.username}} name={{this.username}}>{{this.username}}</option>
                 {{/each}}
 
             </select>
