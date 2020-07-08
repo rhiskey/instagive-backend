@@ -7,7 +7,6 @@ const cors = require('cors')
 var session = require('express-session');
 const axios = require('axios')
 const httpRequest = require('request');
-
 const Instagram = require('instagram-web-api')
 const { IG_USERNAME, IG_PASSWORD } = process.env
 const client = new Instagram({ IG_USERNAME, IG_PASSWORD })
@@ -157,7 +156,10 @@ app.post("/create", urlencodedParser, function (req, res) {
 
   if (!req.body) return res.sendStatus(400);
   const sql = "INSERT INTO givaway.mainusers (username, link, giveinfo, avatar, userid) VALUES (?, ?, ?, ?, ?) ";
-  const data = [req.body.userName, req.body.userLink, req.body.userGiveinfo, req.body.userAvatar, req.body.userID];
+  //Generate Unique index 10 symbols
+  const userID = Date.now(); //1576996323453
+  const data = [req.body.userName, req.body.userLink, req.body.userGiveinfo, req.body.userAvatar, userID];
+  //const data = [req.body.userName, req.body.userLink, req.body.userGiveinfo, req.body.userAvatar, req.body.userID];
   // connection.connect();
   connection.query(sql, data, function (err, results) {
     if (err) console.log(err);
@@ -324,8 +326,10 @@ app.post("/edit", urlencodedParser, function (req, res) {
   const avatar = req.body.userAvatar;
   const uid = req.body.userID;
   const id = req.body.id;
+  // const show = req.body.show;
+  // if(show==)
 
-  connection.query("UPDATE givaway.mainusers SET username=?, giveinfo=?, avatar=?, link=?, userid=?, WHERE id=?", [name, info, avatar, link, uid, id], function (err, data) {
+  connection.query("UPDATE givaway.mainusers SET username=?, giveinfo=?, avatar=?, link=?, userid=? WHERE id=?;", [name, info, avatar, link, uid, id], function (err, data) {
     if (err) return console.log(err);
     res.redirect("/");
   });

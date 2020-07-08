@@ -152,33 +152,59 @@
         <p><a href="/getfollowers" class="btn btn-secondary">Парсинг спонсоров</a></p>
         <p><a href="/followed" class="btn btn-secondary">Просмотр подписанных юзеров</a></p>
         <p><a href="https://insta-give.herokuapp.com/" class="btn btn-primary">Вернуться на сайт</a></p> --}}
-        <table>
-            <tr>
-                <th>Username</th>
-                <th>Link</th>
-                <th>GiveInfo</th>
-                <th>Avatar</th>
-                <th>UserID</th>
+        <form method="POST" action="send">
+            <table>
+                <tr>
+                    <th>Username</th>
+                    <th>Link</th>
+                    <th>GiveInfo</th>
+                    <th>Avatar</th>
+                    <th>UserID</th>
+                    <th>Show?</th>
+                    <th></th>
+                </tr>
+                {{#each users}}
+                <tr>
+                    <td>{{this.username}}</td>
+                    <td>{{this.link}}</td>
+                    <td>{{this.giveinfo}}</td>
+                    <td>{{this.avatar}}</td>
+                    <td>{{this.userid}}</td>
+                    {{!-- <td>{{this.show}}</td> --}}
+                    <td>
+                        <div>
+                            {{!-- <input type="checkbox" id="checkbox" name="checkbox" value="{{this.show}}"
+                                onclick="changeShow()"> --}}
+                            {{!-- <label for="scales"></label> --}}
+                            <label for="scales">{{this.show}}</label>
+                        </div>
+                    </td>
 
-                <th></th>
-            </tr>
-            {{#each users}}
-            <tr>
-                <td>{{this.username}}</td>
-                <td>{{this.link}}</td>
-                <td>{{this.giveinfo}}</td>
-                <td>{{this.avatar}}</td>
-                <td>{{this.userid}}</td>
-
-                <td>
-                    <a href="/edit/{{this.id}}" class="btn btn-secondary">Редактировать</a>|
-                    <form action="delete/{{this.id}}" method="POST" style="display:inline;">
-                        <input type="submit" value="Delete" />
-                    </form>
-                </td>
-            </tr>
-            {{/each}}
-        </table>
+                    <td>
+                        <a href="/edit/{{this.id}}" class="btn btn-secondary">Редактировать</a>|
+                        <form action="delete/{{this.id}}" method="POST" style="display:inline;">
+                            <input type="submit" value="Delete" />
+                        </form>
+                    </td>
+                </tr>
+                {{/each}}
+            </table>
+        </form>
     </div>
+    <script>function changeShow() {
+            // Get the checkbox
+            var checkBox = document.getElementById("checkbox");
+            // Get the output text
+            var text = document.getElementById("text");
+
+            // If the checkbox is checked, display the output text
+            if (checkBox.checked == true) {
+                console.log("Показать")
+                checkBox.nodeValue = 1;
+            } else {
+                console.log("Скрыть")
+                checkBox.nodeValue = 0;
+            }
+        }</script>
 </body>
 <html>
