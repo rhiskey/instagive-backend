@@ -29,7 +29,7 @@ class InstagramBot {
                 run_every_x_hours: 3,
                 like_ratio: 0.75,
                 unfollow_after_days: 2,
-                headless: false
+                headless: true
             },
             selectors: {
                 home_to_login_button: ".izU2O a",
@@ -68,8 +68,6 @@ class InstagramBot {
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
-                '--headless',
-                '--disable-gpu'
             ],
 
         });
