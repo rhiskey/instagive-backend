@@ -195,7 +195,6 @@ class InstagramBot {
             // Классы расположены на главной странице Подписчики-Подписки
             // ----------------------------------------------------------------------------------
             var titleH1 = await page.evaluate(x => {
-
                 let element = document.querySelector(x);
                 return Promise.resolve(element ? element.innerHTML : '');
             }, ".m82CD");
@@ -273,7 +272,7 @@ class InstagramBot {
                 var result_nick = accounts.match(/title="[^"]+"/g);
                 result_nick.splice(user_count);
                 var result_count = result_nick.length;
-                if (result_nick != 'Подтвержденный' || result_nick != 'Verified') {
+                if (result_nick != 'Подтвержденный' && result_nick != 'Verified') {
                     result_nick = result_nick.join(' ').match(/"[^"]+"/g).join(' ').match(/[^"]+/g).join('').match(/[^\s]+/g).join('\n');
                 }
                 // ------------------------------------------------------------------------------
@@ -337,7 +336,7 @@ class InstagramBot {
                                 var nick = arrayOfStrings[i];
                                 console.log("Parse: " + nick + '\n');
                                 // Проверка на пустое и на "Подтвержденный"
-                                if (nick && nick != "Подтвержденный" && nick != "Verified") { //если не пустая
+                                if (nick && nick != "Подтвержденный" && nick != "Verified") { //если не пустая, двойная проверка
                                     const sql = "INSERT INTO givaway.Follow (usernameFollower, followedid, linkFollower) VALUES (?, ?, ?) ";
                                     var instalink = "https://instagram.com/";
                                     var link = instalink + nick;
