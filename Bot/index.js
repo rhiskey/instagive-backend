@@ -29,7 +29,7 @@ class InstagramBot {
                 run_every_x_hours: 3,
                 like_ratio: 0.75,
                 unfollow_after_days: 2,
-                headless: true
+                headless: true //true для heroku - в фоне, false - для запуска на ПК (открыть окно браузера)
             },
             selectors: {
                 home_to_login_button: ".izU2O a",
@@ -45,12 +45,14 @@ class InstagramBot {
                 user_unfollow_button: "span.vBF20 > button._5f5mN",
                 user_unfollow_confirm_button: "div.mt3GC > button.aOOlW.-Cab_",
                 user_followed_button: ".Y8-fY a",
-                not_now_button_old: ".cmbtv",
-                not_now_button: ".aOOlW.HoLwm",
+                not_now_button: ".cmbtv",
+                not_now_button_new: ".aOOlW.HoLwm",
+                not_now_button_class: ".sqdOP.yWX7d.y3zKF",
                 hash_tags_base_class: ".EZdmt",
                 div_accounts: ".isgrP",
                 ul_accounts: ".jSC57._6xe7A",
-                li_accounts: ".PZuss"
+                li_accounts: ".PZuss",
+                its_me_button: ""
             },
             speed_scrolling: 150,
             user_name: false, // true
@@ -78,7 +80,7 @@ class InstagramBot {
 
     async visitInstagram() {
         await this.page.goto(this.config.base_url, { waitUntil: 'load', timeout: 60000 });
-        await this.page.waitFor(2500);
+        //await this.page.waitFor(2500);
 
         //Register
         // await this.page.click(this.config.selectors.home_to_login_button);
@@ -97,13 +99,25 @@ class InstagramBot {
         await this.page.click(this.config.selectors.login_button);
 
         await this.page.waitForNavigation();
-        //Close Turn On Notification modal after login
-        await this.page.waitFor(2500);
-        //  waiting for selector ".cmbtv" failed: timeout 30000ms exceeded
 
-        await this.page.waitForSelector(this.config.selectors.not_now_button);
-        await this.page.click(this.config.selectors.not_now_button);
-        await this.page.waitFor(2500);
+        //Close Turn On Notification modal after login
+        // //  waiting for selector ".cmbtv" failed: timeout 30000ms exceeded
+
+        try {
+            await this.page.waitForSelector(this.config.selectors.not_now_button);
+            await this.page.click(this.config.selectors.not_now_button);
+            await this.page.waitFor(2500);
+        } catch (e) {
+            console.log('Пытались нажать "Не сейчас" при запросе сохранить данные, не вышло(');
+        }
+
+        try {
+            //Close window IT's me Verification from NEw Location
+            await this.page.waitForSelector(this.config.selectors.its_me_button);
+            await this.page.click(this.config.selectors.its_me_button);
+        } catch (e) {
+            console.log('Пытались нажать "Это я" при запросе с нового местоположения, не вышло(');
+        }
     }
 
     async visitFollowedUrl(instagramNickname) {
@@ -149,7 +163,7 @@ class InstagramBot {
         var accStr = await this._doScrollFollowingParsing(this.config.selectors.div_accounts, this.config.selectors.ul_accounts, this.config.selectors.li_accounts, this.page).then(() => console.log("Start Parsing"));
         //  console.log("---------------NEW------------"+ accStr);
 
-        await this.page.waitFor(2000);
+        await this.page.waitFor(2500);
     }
 
     async _doScrollFollowingParsing(p_div_accounts, p_ul_accounts, p_li_accounts, page) {
@@ -180,8 +194,8 @@ class InstagramBot {
             // Выборка кол-ва подписчиков и подписок по языку RU-EN
             // Классы расположены на главной странице Подписчики-Подписки
             // ----------------------------------------------------------------------------------
-
             var titleH1 = await page.evaluate(x => {
+
                 let element = document.querySelector(x);
                 return Promise.resolve(element ? element.innerHTML : '');
             }, ".m82CD");
@@ -335,6 +349,7 @@ class InstagramBot {
                                     });
                                 }
                             }
+                            console.log("Подписчики успешно добавлены в БД");
                         }
                     });
 
@@ -401,7 +416,7 @@ class InstagramBot {
             //return accountsString;
 
         } catch (e) {
-            console.log('%cНажмите на странице Instagram на Подписчиков или Подписки, и запустите заново скрипт', 'color: #a22e1c; font-size:18px;');
+            console.log('%cНажмите на странице Instagram на Подписчиков или Подписки, и запустите заново скрипт', 'color: #a22e1c; font-size:18px;' + '\n' + e.message);
         }
     }
 
