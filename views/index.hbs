@@ -131,20 +131,6 @@
             /* перенос на новую строку */
             white-space: pre-wrap;
         }
-
-
-        table.dataTable thead .sorting:after,
-        table.dataTable thead .sorting:before,
-        table.dataTable thead .sorting_asc:after,
-        table.dataTable thead .sorting_asc:before,
-        table.dataTable thead .sorting_asc_disabled:after,
-        table.dataTable thead .sorting_asc_disabled:before,
-        table.dataTable thead .sorting_desc:after,
-        table.dataTable thead .sorting_desc:before,
-        table.dataTable thead .sorting_desc_disabled:after,
-        table.dataTable thead .sorting_desc_disabled:before {
-            bottom: .5em;
-        }
     </style>
 </head>
 
@@ -162,7 +148,7 @@
                         {{!-- <li id="insert"><a href="/insert">Добавить спонсоров вручную</a></li> --}}
                         <li id="getfollowers"><a href="/getfollowers">Парсинг спонсоров</a></li>
                         <li id="followed"><a href="/followed">Просмотр спонсоров</a></li>
-
+                        <li id="offer"><a href="/offer">Предложенные раздачи</a></li>
                     </ul>
                 </div>
             </div>
@@ -214,7 +200,7 @@
                         </td>
 
                         <td class="td-rating">{{this.rating}}</td>
-                        
+
                         <td>
                             <a href="/edit/{{this.id}}" class="btn btn-secondary">Редактировать</a>|
                             <form action="delete/{{this.id}}" method="POST" style="display:inline;">

@@ -451,6 +451,47 @@ app.get("/followed", function (req, res) {
     }
 
 });
+
+
+// Предложенные с фронта раздачи
+app.post("/offer", function (req, res) {
+    if (!req.body) return res.sendStatus(400);
+    const username = req.body.offerUserName;
+    const giveinfo = req.body.offerUserGiveinfo;
+    const avatar = req.body.offerUserAvatar;
+    const sql = "INSERT INTO givaway.offer (username, link, giveinfo, avatar, userid) VALUES (?, ?, ?, ?, ?) ";
+    //Generate Unique index 10 symbols
+    //const userID = Date.now(); //1576996323453
+    const userID = getRandomIntInclusive(1, 99999);
+    var instalink = "https://instagram.com/";
+    var link = instalink + req.body.userName;
+    const data = [username, link, giveinfo, avatar, userID];
+    connection.query(sql, data, function (err, results) {
+        if (err) console.log(err);
+        res.sendStatus(200);
+    });
+
+});
+
+// возвращаем список предложенных раздач в бэк
+app.get("/offer", function (req, res) {
+    if (req.session.loggedin) {
+        const sql = "SELECT * FROM givaway.offer LIMIT 1000";
+        connection.query(sql, function (err, results) {
+            if (err) console.log(err);
+            // Pass the DB result to the template
+            // res.render('newProject', { dropdownVals: result })
+            res.render("offer.hbs", { users: results });
+
+        })
+        // res.render("followed.hbs");
+
+    } else {
+        res.sendFile(path.join(__dirname + '/login.html'));
+    }
+
+});
+
 // NEW --------------
 
 
@@ -497,16 +538,16 @@ app.get('/home', function (request, response) {
 
 
 
-app.get('/mainusers', function (req, res) {
-    // Проверка авторизации, отправлять POST запрос сюда с данными авторизации
-    connection.connect();
-    connection.query('SELECT * FROM givaway.mainusers', function (error, results, fields) {
-        if (error) throw error;
-        res.send(JSON.stringify(results))
-        //console.log(results);
-    });
-    //connection.end();
-});
+// app.get('/mainusers', function (req, res) {
+//     // Проверка авторизации, отправлять POST запрос сюда с данными авторизации
+//     connection.connect();
+//     connection.query('SELECT * FROM givaway.mainusers', function (error, results, fields) {
+//         if (error) throw error;
+//         res.send(JSON.stringify(results))
+//         //console.log(results);
+//     });
+//     //connection.end();
+// });
 
 app.get('/onlyshow', function (req, res) {
     // Проверка авторизации, отправлять POST запрос сюда с данными авторизации

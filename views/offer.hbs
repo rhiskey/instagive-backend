@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Список предложенных раздач</title>
+    <meta charset="utf-8" />
+    <style>
+        .list {
+                {
+                    {
+                     !-- width: 300px;
+                    --
+                }
+            }
+
+            margin: 0 auto;
+            font-family: Tahoma,
+            Geneva,
+            sans-serif;
+        }
+
+        .list h1 {
+            text-align: center;
+            color: #4d4d4d;
+            font-size: 24px;
+            padding: 20px 0 20px 0;
+        }
+
+        .list table {
+            color: #4d4d4d;
+            border: none;
+            border-collapse: collapse;
+
+                {
+                    {
+                     !-- font-size: 24px;
+                    --
+                }
+            }
+
+                {
+                    {
+                     !-- padding: 20px 0 20px 0;
+                    --
+                }
+            }
+
+        }
+
+        table td {
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+            border-top: 1px solid #000;
+            /* перенос на новую строку */
+            /*white-space: pre-wrap;*/
+        }
+
+        .list input[type="text"],
+        .list input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #dddddd;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .list input[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            background-color: #535b63;
+            border: 0;
+            box-sizing: border-box;
+            cursor: pointer;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .bg-3 {
+            background-color: #ffffff;
+            color: #555555;
+        }
+
+        .container-fluid {
+            padding-top: 70px;
+            padding-bottom: 70px;
+        }
+
+        .navbar {
+            padding-top: 15px;
+        }
+
+        .navbar-nav li a:hover {
+            color: #1abc9c !important;
+        }
+
+        .active>a {
+            color: #1abc9c !important;
+            ;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+            position: -webkit-sticky;
+            /* Safari */
+            position: sticky;
+            top: 0;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        /* Change the link color to #111 (black) on hover */
+        li a:hover {
+            background-color: #111;
+        }
+
+        .td-giveinfo {
+            /* перенос на новую строку */
+            white-space: pre-wrap;
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <div class="list">
+        <h1>Список предложенных раздач</h1>
+
+        <nav class="navbar navbar-default">
+            <div class="container">
+
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li id="home"><a href="/">Назад</a></li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <form method="POST" action="/">
+            <table id="main" cellspacing="0" width="100%" class="table table-striped table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col" class="th-sm"><a href="#" class="sort-by">Username</a></th>
+
+                        <th scope="col" class="th-sm"><a href="#" class="sort-by">GiveInfo</a></th>
+
+                        <th scope="col" class="th-sm"><a href="#" class="sort-by">Avatar</a></th>
+
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each users}}
+                    <tr>
+                        <td>{{this.username}}</td>
+
+                        <td class="td-giveinfo">{{this.giveinfo}}</td>
+
+
+                        {{!-- <td>{{this.show}}</td> --}}
+                        <td>
+                            <form action="/accept/{{this.id}}" method="POST" style="display:inline;">
+                                <input type="submit" value="Принять" />
+                            </form>
+                            --
+                            <form action="/deny/{{this.id}}" method="POST" style="display:inline;">
+                                <input type="submit" value="Отклонить" />
+                            </form>
+               
+                            {{!-- <center><label for="scales">{{this.showgive}}</label></center> --}}
+
+                        </td>
+                        
+                        <td>
+                            <a href="/editOffer/{{this.id}}" class="btn btn-secondary">Редактировать</a>|
+                            {{!-- <form action="deleteOffer/{{this.id}}" method="POST" style="display:inline;">
+                                <input type="submit" value="Delete" />
+                            </form> --}}
+
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+
+            </table>
+        </form>
+    </div>
+
+</body>
+<html>
