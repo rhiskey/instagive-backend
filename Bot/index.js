@@ -1,16 +1,17 @@
 //ig-bot/Bot/index.js
-var instaAccString;
-
-var parsed = false;
 const mysql = require('mysql2');
+require('dotenv').config({ path: __dirname + '/./../.env' }) //Загружаем файл с переменными среды
+
+var instaAccString;
+var parsed = false;
 var instaNick;
 
 var db_config = {
     connectionLimit: 5,
-    host: "77.51.178.66",
-    user: "givawaytest",
-    database: "givaway",
-    password: "uINWTwfn8qUkqup8",
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    database: process.env.DB_DATABASENAME,
+    password: process.env.DB_PASSWORD
 }
 
 var connection;
@@ -325,7 +326,7 @@ class InstagramBot {
 
                     const sql = "SELECT userid FROM givaway.mainusers WHERE username = ?";
                     const data = instaNick;
-                    connection.query(sql, data, function (err, results) {
+                    connection.query(sql, data, function(err, results) {
                         if (err) console.log(err);
 
                         if (results) { //Если есть такой юзер
@@ -346,7 +347,7 @@ class InstagramBot {
                                     var link = instalink + nick;
                                     const data = [nick, results[0].userid, link];
                                     // connection.connect();
-                                    connection.query(sql, data, function (err, results) {
+                                    connection.query(sql, data, function(err, results) {
                                         if (err) console.log(err);
                                         // console.log(results);
                                     });
@@ -390,11 +391,11 @@ class InstagramBot {
                 if ((li_accounts.length != total_count) && (user_count > li_accounts.length) && (height_scrolling[0] != height_scrolling[4])) {
                     // Скроллим
                     await page.$eval(div_accounts,
-                        e => {
-                            return e.scrollBy(0, 500)
-                        }
-                    )
-                    //  Если в массиве размеров скроллинга более 5 элементов, обнуляем
+                            e => {
+                                return e.scrollBy(0, 500)
+                            }
+                        )
+                        //  Если в массиве размеров скроллинга более 5 элементов, обнуляем
                     if (height_scrolling.length == 5) {
                         height_scrolling = [];
                     }
@@ -443,7 +444,7 @@ class InstagramBot {
         //UPDATE AVATAR IN SQL
         const sql = "UPDATE givaway.mainusers SET avatar= ? WHERE username = ?";
         const data = [new_result_avatar, userNickName];
-        connection.query(sql, data, function (err, results) {
+        connection.query(sql, data, function(err, results) {
             if (err) console.log(err);
         });
     }
@@ -463,8 +464,8 @@ class InstagramBot {
 
     async _doPostLikeAndFollow(parentClass, page) {
 
-        for (let r = 1; r < 4; r++) {//loops through each row
-            for (let c = 1; c < 4; c++) {//loops through each item in the row
+        for (let r = 1; r < 4; r++) { //loops through each row
+            for (let c = 1; c < 4; c++) { //loops through each item in the row
 
                 let br = false;
                 //Try to select post
@@ -473,8 +474,8 @@ class InstagramBot {
                         console.log(e.message);
                         br = true;
                     });
-                await page.waitFor(2250 + Math.floor(Math.random() * 250));//wait for random amount of time
-                if (br) continue;//if successfully selecting post continue
+                await page.waitFor(2250 + Math.floor(Math.random() * 250)); //wait for random amount of time
+                if (br) continue; //if successfully selecting post continue
 
                 //get the current post like status by checking if the selector exist
                 let hasEmptyHeart = await page.$(this.config.selectors.post_heart_grey);
@@ -489,8 +490,8 @@ class InstagramBot {
 
                 //like the post if not already liked. Check against our like ratio so we don't just like all post
                 if (hasEmptyHeart !== null && Math.random() < this.config.settings.like_ratio) {
-                    await page.click(this.config.selectors.post_like_button);//click the like button
-                    await page.waitFor(10000 + Math.floor(Math.random() * 5000));// wait for random amount of time.
+                    await page.click(this.config.selectors.post_like_button); //click the like button
+                    await page.waitFor(10000 + Math.floor(Math.random() * 5000)); // wait for random amount of time.
                 }
 
                 //let's check from our archive if we've follow this user before
