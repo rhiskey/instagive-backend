@@ -19,6 +19,7 @@
         }
 
         .add-form input[type="text"],
+        .add-form input[type="url"],
         .add-form input[type="number"] {
             width: 100%;
             padding: 15px;
@@ -42,21 +43,24 @@
 
 <body>
     <div class="add-form">
-    <h1>Добавление раздачи</h1>
-    <form method="POST">
-        <label>Никнейм *</label><br>
-        <input type="text"  name="userName" class="field" required="required" /><br><br>
-        {{!-- <label>ID</label><br>
+        <h1>Добавление раздачи</h1>
+        <label>Аккаунт должен быть ОТКРЫТЫЙ</label><br><br>
+        <form method="POST">
+            <label>Никнейм *</label><br>
+            <input type="text" name="userName" class="field" required="required" /><br><br>
+            {{!-- <label>ID</label><br>
         <input type="text"  name="userID" class="field" /><br><br> --}}
-        {{!-- <label>Ссылка на профиль</label><br>
+            {{!-- <label>Ссылка на профиль</label><br>
         <input type="text" name="userLink" class="field" /><br><br> --}}
-        <label>Инфо раздачи *</label><br>
-        <input type="text" name="userGiveinfo" class="field" required="required" /><br><br>
-        <label>Прямая ссылка на аватар (не обязательно)</label><br>
-        <input type="text" name="userAvatar" class="field" /><br><br>
-        <input type="submit" value="Отправить" />
-    </form>
-    <a href="/" class="btn btn-secondary">К списку раздач</a>
+            <label>Инфо раздачи *</label><br>
+            {{!-- <input type="text" name="userGiveinfo" class="field" required="required" /><br><br> --}}
+            <textarea name="userGiveinfo" rows="15" cols="40" required="required">{{user.giveinfo}}</textarea><br><br>
+            <label>Прямая ссылка на аватар (не обязательно)</label><br>
+            <input type="url" name="userAvatar" class="field" /><br><br>
+            <input type="submit" value="Отправить" />
+        </form>
+        <a href="/" class="btn btn-secondary">К списку раздач</a>
+        <p>После нажатия на кнопку "Отправить" начнется парсинг фолловеров в фоне.</p>
     </div>
 </body>
 <html>

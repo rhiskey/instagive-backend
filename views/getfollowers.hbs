@@ -19,6 +19,7 @@
         }
 
         .control-form input[type="text"],
+        .control-form-select,
         .control-form input[type="number"] {
             width: 100%;
             padding: 15px;
@@ -58,7 +59,7 @@
         <form method="POST" action="getfollowers">
             <label>Выберите аккаунт для парсинга</label><br>
 
-            <select class="control-form" id="sel1" name="userName">
+            <select class="control-form-select" id="sel1" name="userName">
                 {{!-- <% for(var i=0; i < dropdownVals.length; i++) { %>
                 <option><%= dropdownVals[i] %></option>
                 <% } %> --}}

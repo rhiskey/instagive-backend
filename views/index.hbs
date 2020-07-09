@@ -193,14 +193,14 @@
                             <form action="/visible/{{this.id}}" method="POST" style="display:inline;">
                                 <input type="submit" value="Показ" />
                             </form>
-
+                            --
                             <form action="/hide/{{this.id}}" method="POST" style="display:inline;">
                                 <input type="submit" value="Скрыть" />
                             </form>
                             {{!-- <input type="checkbox" id="checkbox" name="checkbox" value="{{this.show}}"
                                 onclick="changeShow()"> --}}
                             {{!-- <label for="scales"></label> --}}
-                            <label for="scales">{{this.showgive}}</label>
+                            <center><label for="scales">{{this.showgive}}</label></center>
 
                         </td>
 
@@ -209,8 +209,8 @@
                             <form action="delete/{{this.id}}" method="POST" style="display:inline;">
                                 <input type="submit" value="Delete" />
                             </form>
-
-                            <form action="clearfollowed/{{this.id}}" method="POST" style="display:inline;">
+                            --
+                            <form action="clearfollowed/{{this.userid}}" method="POST" style="display:inline;">
                                 <input type="submit" value="Clear Follows" />
                             </form>
                         </td>
