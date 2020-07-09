@@ -33,11 +33,9 @@ const run = async (userNickname) => {
 
   await bot.visitFollowedUrl(userNickname).then(() => console.log("VISITED USERNAME URL"));
 
-  await bot.parseAvatar(userNickname).then(() => console.log("AVATAR ADDED TO DATABASE"));
-  // Вернуть значение строки юзеров
+  //BAD URL TIMESTAMP
+  //await bot.parseAvatar(userNickname).then(() => console.log("AVATAR ADDED TO DATABASE"));
 
-  //Послать уведомление: занести в БД подписчиков?
-  // Если да - > функция запси В БД
 
   // await bot.unFollowUsers();
 
