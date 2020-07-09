@@ -39,6 +39,12 @@
             font-weight: bold;
             color: #ffffff;
         }
+
+        .give-textarea {
+            /* перенос на новую строку */
+            white-space: pre-wrap;
+
+        }
     </style>
 </head>
 
@@ -50,7 +56,7 @@
             <label>Имя</label><br>
             <input type="text" name="userName" value="{{user.username}}" /><br><br>
             <label>Инфо раздачи</label><br>
-            <textarea name="userGiveinfo" rows="15" cols="40" >{{user.giveinfo}}</textarea><br><br>
+            <textarea name="userGiveinfo" rows="15" cols="40" class="give-textarea">{{user.giveinfo}}</textarea><br><br>
             {{!-- <input type="text" name="userGiveinfo" value="{{user.giveinfo}}" /><br><br> --}}
             <label>Ссылка на аватар</label><br>
             <input type="url" name="userAvatar" value="{{user.avatar}}" /><br><br>

@@ -51,6 +51,8 @@
             border-left: 1px solid #000;
             border-right: 1px solid #000;
             border-top: 1px solid #000;
+            /* перенос на новую строку */
+            /*white-space: pre-wrap;*/
         }
 
         .list input[type="text"],
@@ -125,6 +127,11 @@
             background-color: #111;
         }
 
+        .td-giveinfo {
+            /* перенос на новую строку */
+            white-space: pre-wrap;
+        }
+
 
         table.dataTable thead .sorting:after,
         table.dataTable thead .sorting:before,
@@ -185,7 +192,7 @@
                     <tr>
                         <td>{{this.username}}</td>
 
-                        <td>{{this.giveinfo}}</td>
+                        <td class="td-giveinfo">{{this.giveinfo}}</td>
 
 
                         {{!-- <td>{{this.show}}</td> --}}
