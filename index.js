@@ -464,7 +464,7 @@ app.post("/offer", function (req, res) {
     //const userID = Date.now(); //1576996323453
     const userID = getRandomIntInclusive(1, 99999);
     var instalink = "https://instagram.com/";
-    var link = instalink + req.body.userName;
+    var link = instalink + req.body.offerUserName;
     const data = [username, link, giveinfo, avatar, userID];
     connection.query(sql, data, function (err, results) {
         if (err) console.log(err);
