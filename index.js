@@ -578,10 +578,10 @@ app.post("/oauth", urlencodedParser, function (request, responseAuth) {
         url: 'https://api.instagram.com/oauth/access_token',
         method: 'POST',
         form: {
-            client_id: '296560698030895',
-            client_secret: '759f4d6c839b89130426f21518ca56d5',
+            client_id: process.env.IG_CLIENT_ID,
+            client_secret: process.env.IG_CLIENT_SECRET,
             grant_type: 'authorization_code',
-            redirect_uri: 'https://insta-give.herokuapp.com/',
+            redirect_uri: process.env.FRONTEND,
             code: request.body.authCode
         }
     };
@@ -625,5 +625,5 @@ app.listen(PORT, () => {
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('*', function (req, res) {
-    res.sendFile('https://insta-give.herokuapp.com/index.html');
+    res.sendFile(process.env.FRONTEND + '/index.html');
 });

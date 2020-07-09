@@ -23,8 +23,8 @@ class InstagramBot {
     constructor() {
         var config = {
             base_url: "https://www.instagram.com",
-            username: "memebukket",
-            password: "654321meme123",
+            username: process.env.IG_USERNAME,
+            password: process.env.IG_PASSWORD,
             hashTags: ["instagive", "раздачи", "giveaway"],
             settings: {
                 run_every_x_hours: 3,
