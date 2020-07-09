@@ -55,6 +55,8 @@ class InstagramBot {
                 its_me_button: ".", //TODO
                 send_security_button: ".5f5mN.jIbKX.KUBKM.yZn4P",
                 send_security_span: ".idhGk._1OSdk",
+                avatar_span: "._2dbep",
+                avatar: "._6q-tv"
             },
             speed_scrolling: 150,
             user_name: false, // true
@@ -421,7 +423,30 @@ class InstagramBot {
         }
     }
 
+    async parseAvatar(userNickName) {
+        var avatar = await this.page.$eval(this.config.selectors.avatar_span, node => node.innerHTML);
 
+        // this.config.selectors.avatar_span;
+        // this.config.selectors.avatar;
+        // ------------------------------------------------------------------------------
+        // Разбор аватаров аккаунтов
+        // ------------------------------------------------------------------------------
+        var result_avatar = avatar.match(/src="[^"]+"/g);
+        //src="https://scontent-arn2-1.cdninstagram.com/v/t51.2885-19/s150x150/106212193_290471092311333_7334423558466710724_n.jpg?_nc_ht=scontent-arn2-1.cdninstagram.com&amp;_nc_ohc=11Kn5_-9ilQAX8UPXWM&amp;oh=282980cbbbe8bf55494f06eb144c4584&amp;oe=5F2E24BF"
+        // result_avatar.splice(user_count);
+        // result_avatar = result_avatar.join(' ').match(/"[^"]+"/g).join(' ').match(/[^"]+/g).join('').match(/[^\s]+/g).join('\n');
+
+        //Delete src=" "
+        //var ret = result_avatar.replace('src="','');
+        var new_result_avatar = result_avatar.toString().replace('src=\"', '');
+        new_result_avatar = new_result_avatar.replace('\"', '');
+        //UPDATE AVATAR IN SQL
+        const sql = "UPDATE givaway.mainusers SET avatar= ? WHERE username = ?";
+        const data = [new_result_avatar, userNickName];
+        connection.query(sql, data, function (err, results) {
+            if (err) console.log(err);
+        });
+    }
 
     async visitHashtagUrl() {
         const shuffle = require('shuffle-array');

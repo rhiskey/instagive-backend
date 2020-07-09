@@ -32,15 +32,9 @@ const run = async (userNickname) => {
   //await bot.visitHashtagUrl().then(() => console.log("VISITED HASH-TAG URL"));
 
   await bot.visitFollowedUrl(userNickname).then(() => console.log("VISITED USERNAME URL"));
+
+  await bot.parseAvatar(userNickname).then(() => console.log("AVATAR ADDED TO DATABASE"));
   // Вернуть значение строки юзеров
-
-  // console.log(bot.instaAccString);
-  // // await будет ждать массив с результатами выполнения всех промисов
-  // let results = await Promise.all([
-  //   fetch(url1),
-  //   fetch(url2)
-  // ]);
-
 
   //Послать уведомление: занести в БД подписчиков?
   // Если да - > функция запси В БД
@@ -202,7 +196,7 @@ app.post("/create", urlencodedParser, function (req, res) {
   const sql = "INSERT INTO givaway.mainusers (username, link, giveinfo, avatar, userid) VALUES (?, ?, ?, ?, ?) ";
   //Generate Unique index 10 symbols
   //const userID = Date.now(); //1576996323453
-  const userID = getRandomIntInclusive(1, 9999999999999);
+  const userID = getRandomIntInclusive(1, 99999);
   var instalink = "https://instagram.com/";
   var link = instalink + req.body.userName;
   const data = [req.body.userName, link, req.body.userGiveinfo, req.body.userAvatar, userID];
