@@ -28,7 +28,7 @@
     "lodash": "^4.17.15",
     "mysql": "^2.18.1",
     "mysql2": "^2.1.0",
-    "puppeteer": "^5.0.0",
+    "puppeteer": "^5.5.0",
     "request": "^2.88.2",
     "shuffle-array": "^1.0.1"
   },

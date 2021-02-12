@@ -4,49 +4,37 @@ const PORT = process.env.PORT || 8080
 const mysql = require('mysql2');
 const bodyParser = require("body-parser");
 const cors = require('cors')
-var session = require('express-session');
-const axios = require('axios')
+// var session = require('express-session');
+// const axios = require('axios')
 const httpRequest = require('request');
 var cookieSession = require('cookie-session')
 // Listen to DataBase Change 
 
 
-const Instagram = require('instagram-web-api')
-const { IG_USERNAME, IG_PASSWORD } = process.env
-const client = new Instagram({ IG_USERNAME, IG_PASSWORD })
+// const Instagram = require('instagram-web-api')
+// const { IG_USERNAME, IG_PASSWORD } = process.env
+// const client = new Instagram({ IG_USERNAME, IG_PASSWORD })
 
 // Для парсера
 const Bot = require('./Bot'); // this directly imports the Bot/index.js file
-const PUPconfig = require('./Bot/config/puppeter.json');
+// const PUPconfig = require('./Bot/config/puppeter.json');
 
-var instaAccs;
+// var instaAccs;
 
 // const resultNick = require('./Bot/')
 const run = async (userNickname) => {
     const bot = new Bot();
-
     const startTime = Date();
-
     await bot.initPuppeter().then(() => console.log("PUPPETEER INITIALIZED"));
-
     await bot.visitInstagram().then(() => console.log("BROWSING INSTAGRAM"));
-
     //await bot.visitHashtagUrl().then(() => console.log("VISITED HASH-TAG URL"));
-
     await bot.visitFollowedUrl(userNickname).then(() => console.log("VISITED USERNAME URL"));
-
     //BAD URL TIMESTAMP
     //await bot.parseAvatar(userNickname).then(() => console.log("AVATAR ADDED TO DATABASE"));
-
-
     // await bot.unFollowUsers();
-
     // await bot.closeBrowser().then(() => console.log("BROWSER CLOSED"));
-
     const endTime = Date();
-
     console.log(`START TIME - ${startTime} / END TIME - ${endTime}`)
-
     //Потенциальная утечка, нужно закрыть браузер, но после парсинга
     // await bot.closeBrowser().then(() => console.log("BROWSER CLOSED"));
 
@@ -54,6 +42,9 @@ const run = async (userNickname) => {
     // console.log(instaAccs);
     // return bot.instaAccString;
 };
+
+
+
 
 
 require('dotenv').config();
@@ -73,33 +64,6 @@ connection = mysql.createConnection(db_config);
 
 // создаем парсер для данных application/x-www-form-urlencoded
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
-
-// var dsn = {
-//     host: process.env.DB_HOST,
-//     user: process.env.DB_USER,
-//     password: process.env.DB_PASSWORD
-// };
-
-// const instance = new MySQLEvents(dsn, {
-//     startAtEnd: true,
-//     excludedSchemas: {
-//         mysql: true,
-//     },
-// });
-
-// instance.start();
-
-// instance.addTrigger({
-//     name: 'TEST',
-//     expression: '*',
-//     statement: MySQLEvents.STATEMENTS.ALL,
-//     onEvent: (event) => { // You will receive the events here
-//         console.log(event);
-//     },
-// });
-
-// instance.on(MySQLEvents.EVENTS.CONNECTION_ERROR, console.error);
-// instance.on(MySQLEvents.EVENTS.ZONGJI_ERROR, console.error);
 
 // Initialize the app
 const app = express();
@@ -140,28 +104,6 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set("view engine", "hbs");
 
-// // СДЕЛАТЬ MVC и API
-// const userController = require("./controllers/userController.js");
-// const followersController = require("./controllers/followersController.js");
-// // определяем Router
-// const userRouter = express.Router();
-// const followersRouter = express.Router();
-
-
-// // определяем маршруты и их обработчики внутри роутера userRouter
-// userRouter.use("/create", userController.addUser);
-// userRouter.use("/insert", userController.insertUser);
-// userRouter.use("/delete", userController.deleteUser);
-// userRouter.use("/edit", userController.editUser);
-// userRouter.use("/", userController.index);
-// app.use("/", userRouter);
-
-// // определяем маршруты и их обработчики внутри роутера followersRouter
-// followersRouter.get("/about", followersController.about);
-// followersRouter.get("/", followersController.index);
-// app.use("/followers", followersRouter);
-
-// app.set("view engine", "hbs");
 
 // получение списка пользователей
 app.get("/", function (req, res) {
