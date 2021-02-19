@@ -1,42 +1,15 @@
-# node-js-getting-started
 
-A barebones Node.js app using [Express 4](http://expressjs.com/).
+# InstaGive Backend
 
-This application supports the [Getting Started on Heroku with Node.js](https://devcenter.heroku.com/articles/getting-started-with-nodejs) article - check it out.
+![Lang](https://img.shields.io/github/languages/top/rhiskey/instagive-backend)
+![Code size](https://img.shields.io/github/languages/code-size/rhiskey/instagive-backend)
+![Lines of code](https://img.shields.io/tokei/lines/github/rhiskey/instagive-backend)
+![issues](https://img.shields.io/github/issues/rhiskey/instagive-backend)
+![license](https://img.shields.io/github/license/rhiskey/instagive-backend)
+![forks](https://img.shields.io/github/forks/rhiskey/insta-give?style=social)
+![start](https://img.shields.io/github/stars/rhiskey/insta-give?style=social)
 
-## Running Locally
-
-Make sure you have [Node.js](http://nodejs.org/) and the [Heroku CLI](https://cli.heroku.com/) installed.
-
-```sh
-$ git clone https://github.com/heroku/node-js-getting-started.git # or clone your own fork
-$ cd node-js-getting-started
-$ npm install
-$ npm start
-```
-
-Your app should now be running on [localhost:5000](http://localhost:5000/).
-
-## Deploying to Heroku
-
-```
-$ heroku create
-$ git push heroku master
-$ heroku open
-```
-or
-
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
-
-## Documentation
-
-For more information about using Node.js on Heroku, see these Dev Center articles:
-
-- [Getting Started on Heroku with Node.js](https://devcenter.heroku.com/articles/getting-started-with-nodejs)
-- [Heroku Node.js Support](https://devcenter.heroku.com/articles/nodejs-support)
-- [Node.js on Heroku](https://devcenter.heroku.com/categories/nodejs)
-- [Best Practices for Node.js Development](https://devcenter.heroku.com/articles/node-best-practices)
-- [Using WebSockets on Heroku with Node.js](https://devcenter.heroku.com/articles/node-websockets)
-
-Update Config Vars:
-* https://devcenter.heroku.com/articles/config-vars
+This is Backend part of InstaGive service:
+Can parse followers from instagram, has admin panel to create giveaways (CRUD)
+Used Puppeteer + NodeJS
+![Frontend Part](https://media.giphy.com/media/cqerVSMptIqV6zMwOK/giphy.gif)
