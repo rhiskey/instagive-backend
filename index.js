@@ -45,9 +45,6 @@ const run = async (userNickname) => {
 
     // await bot.closeBrowser().then(() => console.log("BROWSER CLOSED"));
 
-    // instaAccs = bot.getAcc();
-    // console.log(instaAccs);
-    // return bot.instaAccString;
 };
 
 
@@ -92,37 +89,13 @@ app.use(cors());
 app.use(express.urlencoded());
 
 app.use(express.json());
-// NEW --------------
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.set("view engine", "hbs");
 
-// const userController = require("./controllers/userController.js");
-// const followersController = require("./controllers/followersController.js");
-// // определяем Router
-// const userRouter = express.Router();
-// const followersRouter = express.Router();
-
-
-// // определяем маршруты и их обработчики внутри роутера userRouter
-// userRouter.use("/create", userController.addUser);
-// userRouter.use("/insert", userController.insertUser);
-// userRouter.use("/delete", userController.deleteUser);
-// userRouter.use("/edit", userController.editUser);
-// userRouter.use("/", userController.index);
-// app.use("/", userRouter);
-
-// // определяем маршруты и их обработчики внутри роутера followersRouter
-// followersRouter.get("/about", followersController.about);
-// followersRouter.get("/", followersController.index);
-// app.use("/followers", followersRouter);
-
-// app.set("view engine", "hbs");
-
 app.get("/", function (req, res) {
     if (req.session.loggedin) {
         connection.query("SELECT * FROM givaway.mainusers", function (err, data) {
-            // res.send(JSON.stringify(results))
             if (err) return console.log(err);
             res.render("index.hbs", {
                 users: data
@@ -130,31 +103,10 @@ app.get("/", function (req, res) {
         });
     } else {
         res.sendFile(path.join(__dirname + '/login.html'));
-        // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
     }
 
 });
 
-
-// //Изменение видимости раздач
-// app.post("/", urlencodedParser, function (req, res) {
-
-//   if (!req.body) return res.sendStatus(400);
-//   const name = req.body.userName;
-//   const link = req.body.userLink;
-//   const info = req.body.userGiveinfo;
-//   const avatar = req.body.userAvatar;
-//   const uid = req.body.userID;
-//   const id = req.body.id;
-//   const show = req.body.showgive;
-//   // if(show==)
-
-//   connection.query("UPDATE givaway.mainusers SET username=?, giveinfo=?, avatar=?, link=?, userid=?, showgive=?  WHERE id=?;", [name, info, avatar, link, uid, show, id], function (err, data) {
-//     if (err) return console.log(err);
-//     res.redirect("/");
-//   });
-
-// });
 
 // возвращаем форму для добавления данных
 app.get("/create", function (req, res) {
@@ -162,16 +114,15 @@ app.get("/create", function (req, res) {
         res.render("create.hbs");
     } else {
         res.sendFile(path.join(__dirname + '/login.html'));
-        // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
     }
-
 });
 
 function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
+    return Math.floor(Math.random() * (max - min + 1)) + min; 
 }
+
 // получаем отправленные данные и добавляем их в БД 
 app.post("/create", urlencodedParser, function (req, res) {
 
@@ -181,53 +132,27 @@ app.post("/create", urlencodedParser, function (req, res) {
     var instalink = "https://instagram.com/";
     var link = instalink + req.body.userName;
     const data = [req.body.userName, link, req.body.userGiveinfo, req.body.userAvatar, userID];
-    //const data = [req.body.userName, req.body.userLink, req.body.userGiveinfo, req.body.userAvatar, req.body.userID];
-    // connection.connect();
     connection.query(sql, data, function (err, results) {
         if (err) console.log(err);
-        // req.send(JSON.stringify(results))
-
         const username2Parse = req.body.userName;
-        //Старт парсера
+
         run(username2Parse).catch(e => console.log(e.message));
-
-        // // Дождаться завершения парсинга - передать строку с акками и В БД
-
         res.redirect("/");
     });
 
 });
 
-// // Получаем список ID организаторов
-// app.get('/getOrgID', function (req, res) {
-//   if (!req.body) return res.sendStatus(400);
-//   // If it's not showing up, just use req.body to see what is actually being passed.
-//   console.log(req.body.selectpicker);
-//   const sql = "SELECT username, userid FROM givaway.mainusers "
-//   // connection.connect();
-//   connection.query(sql, data, function (err, results) {
-//     if (err) console.log(err);
-//     res.send(JSON.stringify(results))
-//     // console.log(results);
-//   });
-// });
-
 
 // возвращаем форму 
 app.get("/getfollowers", function (req, res) {
     if (req.session.loggedin) {
-        //res.render("getfollowers.hbs");
         const sql = "SELECT username FROM givaway.mainusers";
         connection.query(sql, function (err, results) {
             if (err) console.log(err);
-            // Pass the DB result to the template
-            // res.render('newProject', { dropdownVals: result })
             res.render("getfollowers.hbs", { dropdownVals: results });
-
         })
     } else {
         res.sendFile(path.join(__dirname + '/login.html'));
-        //   // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
     }
 
 });
@@ -243,7 +168,7 @@ app.post("/getfollowers", urlencodedParser, function (req, res) {
         if (results) {
             var instaID = results[0];
             console.log(instaID);
-            if (instaID) { //Если есть такой юзер
+            if (instaID) {
                 run(username2Parse).catch(e => console.log(e.message));
                 res.redirect("/");
             } else { res.send(500, 'Такого юзера не существует в БД') }
@@ -251,44 +176,6 @@ app.post("/getfollowers", urlencodedParser, function (req, res) {
     });
 
 });
-
-// // возвращаем форму для добавления данных спонсоров
-// app.get("/insert", function (req, res) {
-//   if (req.session.loggedin) {
-//     res.render("insert.hbs");
-//   } else {
-//     res.sendFile(path.join(__dirname + '/login.html'));
-//     // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
-//   }
-
-// });
-// // получаем отправленные данные и добавляем их в БД 
-// app.post("/insert", urlencodedParser, function (req, res) {
-
-//   if (!req.body) return res.sendStatus(400);
-//   const accString = req.body.accString;
-//   var separator = ' ';
-//   var arrayOfStrings = accString.split(separator);
-//   //Для каждого элемента строки с разделителем пробел
-//   var i;
-//   for (i = 0; i < arrayOfStrings.length; i++) {
-//     var nick = arrayOfStrings[i];
-//     // Проверка на пустое и на "Подтвержденный"
-//     if (nick && nick != "Подтвержденный") { //если не пустая
-//       const sql = "INSERT INTO givaway.Follow (usernameFollower, followedid, linkFollower) VALUES (?, ?, ?) ";
-//       var instalink = "https://instagram.com/";
-//       var link = instalink + nick;
-//       const data = [nick, req.body.followedID, link];
-//       // connection.connect();
-//       connection.query(sql, data, function (err, results) {
-//         if (err) console.log(err);
-//         // console.log(results);
-//       });
-//     }
-//   }
-//   res.redirect("/");
-
-// });
 
 // получем id редактируемого пользователя, получаем его из бд и отправлям с формой редактирования
 app.get("/edit/:id", function (req, res) {
@@ -302,10 +189,10 @@ app.get("/edit/:id", function (req, res) {
         });
     } else {
         res.sendFile(path.join(__dirname + '/login.html'));
-        // response.send('Пожалуйста авторизируйтесь для просмотра данной страницы!');
     }
 
 });
+
 // получаем отредактированные данные и отправляем их в БД
 app.post("/edit", urlencodedParser, function (req, res) {
 
@@ -318,8 +205,6 @@ app.post("/edit", urlencodedParser, function (req, res) {
     const id = req.body.id;
     const show = req.body.showgive;
     const rating = req.body.rating;
-    // if(show==)
-
     connection.query("UPDATE givaway.mainusers SET username=?, giveinfo=?, avatar=?, link=?, userid=?, rating=? WHERE id=?;", [name, info, avatar, link, uid, rating, id], function (err, data) {
         if (err) return console.log(err);
         res.redirect("/");
@@ -334,8 +219,7 @@ app.post("/delete/:id", function (req, res) {
     connection.query("SELECT userid FROM givaway.mainusers WHERE id =?", [id], function (err, data) {
         if (err) return console.log(err);
         const userid = data[0].userid;
-        //Clear Followed
-        try{ //if exist
+        try{
         connection.query("DELETE FROM givaway.Follow WHERE followedid=?", [userid], function (err, data) {
             if (err) return console.log(err);
 
@@ -371,24 +255,18 @@ app.post("/hide/:id", function (req, res) {
 
 //Очищаем фолловеров
 app.post("/clearfollowed/:userid", function (req, res) {
-    // const id = req.params.id;
     const userid = req.params.userid;
-    //Get userid
-    // connection.query("SELECT userid FROM givaway.mainusers WHERE id =?", [id], function (err, results) {
-    //   if (err) console.log(err);
-    //   var flid = results[0].userid;
     connection.query("DELETE FROM givaway.Follow WHERE followedid=?", [userid], function (err, data) {
         if (err) return console.log(err);
         res.redirect("/");
     });
-    // });
 });
+
 // получаем аккаунты, на которых подписан юзер
 app.post("/followed", function (req, res) {
     if (!req.body) return res.sendStatus(400);
     const uid = req.body.userID;
     const name = req.body.userName;
-
 });
 
 // возвращаем форму для поиска подписанных
@@ -397,13 +275,9 @@ app.get("/followed", function (req, res) {
         const sql = "SELECT id, usernameFollower, linkFollower, LEFT(avatarFollower, 256), useridFollower, followedid FROM givaway.Follow LIMIT 1000";
         connection.query(sql, function (err, results) {
             if (err) console.log(err);
-            // Pass the DB result to the template
-            // res.render('newProject', { dropdownVals: result })
             res.render("followed.hbs", { users: results });
 
         })
-        // res.render("followed.hbs");
-
     } else {
         res.sendFile(path.join(__dirname + '/login.html'));
     }
@@ -418,8 +292,6 @@ app.post("/offer", function (req, res) {
     const giveinfo = req.body.offerUserGiveinfo;
     const avatar = req.body.offerUserAvatar;
     const sql = "INSERT INTO givaway.offer (username, link, giveinfo, avatar, userid) VALUES (?, ?, ?, ?, ?) ";
-    //Generate Unique index 10 symbols
-    //const userID = Date.now(); //1576996323453
     const userID = getRandomIntInclusive(1, 99999);
     var instalink = "https://instagram.com/";
     var link = instalink + req.body.offerUserName;
@@ -437,12 +309,9 @@ app.get("/offer", function (req, res) {
         const sql = "SELECT * FROM givaway.offer LIMIT 1000";
         connection.query(sql, function (err, results) {
             if (err) console.log(err);
-            // Pass the DB result to the template
-            // res.render('newProject', { dropdownVals: result })
             res.render("offer.hbs", { users: results });
 
         })
-        // res.render("followed.hbs");
 
     } else {
         res.sendFile(path.join(__dirname + '/login.html'));
@@ -473,7 +342,7 @@ app.post("/acceptoffer/:id", function (req, res) {
         const avatar = results[0].avatar;
 
         const sql = "INSERT INTO givaway.mainusers (username, link, giveinfo, avatar, userid) VALUES (?, ?, ?, ?, ?) ";
-        //Generate Unique index 10 symbols
+
         const userID = getRandomIntInclusive(1, 99999);
         const data = [username, link, giveinfo, avatar, userID];
         connection.query(sql, data, function (err, results) {
@@ -494,12 +363,9 @@ app.get("/changeadmin", function (req, res) {
         const sql = "SELECT * FROM givaway.accounts LIMIT 1000";
         connection.query(sql, function (err, results) {
             if (err) console.log(err);
-            // Pass the DB result to the template
-            // res.render('newProject', { dropdownVals: result })
             res.render("changeadmin.hbs", { users: results });
 
         })
-        // res.render("followed.hbs");
 
     } else {
         res.sendFile(path.join(__dirname + '/login.html'));
@@ -523,11 +389,6 @@ app.post("/changeadmin", function (req, res) {
 
 });
 
-// NEW --------------
-
-
-////-------OLD 
-
 
 app.post('/auth', function (request, response) {
     var username = request.body.username;
@@ -537,7 +398,7 @@ app.post('/auth', function (request, response) {
             if (results.length > 0) {
                 request.session.loggedin = true;
                 request.session.username = username;
-                response.redirect('/'); //add
+                response.redirect('/');
             } else {
                 response.send('Неправильные Username или Password!');
             }
@@ -558,17 +419,6 @@ app.get('/home', function (request, response) {
     response.end();
 });
 
-
-// app.get('/mainusers', function (req, res) {
-//     // Проверка авторизации, отправлять POST запрос сюда с данными авторизации
-//     connection.connect();
-//     connection.query('SELECT * FROM givaway.mainusers', function (error, results, fields) {
-//         if (error) throw error;
-//         res.send(JSON.stringify(results))
-//         //console.log(results);
-//     });
-//     //connection.end();
-// });
 
 app.get('/onlyshow', function (req, res) {
     // Проверка авторизации, отправлять POST запрос сюда с данными авторизации
@@ -607,7 +457,6 @@ app.post("/getfollowers", urlencodedParser, function (req, res) {
     // По имени из mainusers - получить userID - затем в таблице Follow получить все записи у которых followedid совпадает с userID
     connection.query('SELECT userid FROM givaway.mainusers WHERE username=?', [name], function (err, responseID) {
         if (err) return console.log(err);
-        // res.redirect("/");
         console.log(responseID);
 
         //// Если вдруг их много (имя одно и тоже а ID разные)
@@ -615,7 +464,7 @@ app.post("/getfollowers", urlencodedParser, function (req, res) {
         // for(let i=0; i < users.length; i++){
         //   console.log(users[i].userid);
 
-        const ID = responseID[0].userid; //один единственный!
+        const ID = responseID[0].userid;
         console.log(ID);
         connection.query('SELECT * FROM givaway.Follow WHERE followedid=?', [ID], function (err, followers) {
             if (err) return console.log(err);
@@ -653,7 +502,6 @@ app.post("/oauth", urlencodedParser, function (request, responseAuth) {
             console.log(user.access_token)
 
         } else { inBoundResp.send(`${response.statusCode}`); } //Если ошибка отправляем статус во фроннт
-        //res.redirect('/');
     }, (error, res, body) => {
         if (error) {
             console.error(error)
@@ -662,7 +510,6 @@ app.post("/oauth", urlencodedParser, function (request, responseAuth) {
     });
 
 });
-
 
 
 // Start the server
