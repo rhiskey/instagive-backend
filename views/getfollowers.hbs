@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Парсер</title>
+    <meta charset="utf-8" />
+    <style>
+        .control-form {
+            width: 300px;
+            margin: 0 auto;
+            font-family: Tahoma, Geneva, sans-serif;
+        }
+
+        .control-form h1 {
+            text-align: center;
+            color: #4d4d4d;
+            font-size: 24px;
+            padding: 20px 0 20px 0;
+        }
+
+        .control-form input[type="text"],
+        .control-form-select,
+        .control-form input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #dddddd;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .control-form input[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            background-color: #535b63;
+            border: 0;
+            box-sizing: border-box;
+            cursor: pointer;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        code {
+            font-family: Consolas, "courier new";
+            color: crimson;
+            background-color: #f1f1f1;
+            padding: 2px;
+            font-size: 105%;
+        }
+
+        textarea {
+            border: none;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="control-form">
+        <form method="POST" action="getfollowers">
+            <label>Выберите аккаунт для парсинга</label><br>
+
+            <select class="control-form-select" id="sel1" name="userName">
+                {{!-- <% for(var i=0; i < dropdownVals.length; i++) { %>
+                <option><%= dropdownVals[i] %></option>
+                <% } %> --}}
+                {{#each dropdownVals}}
+                <option value={{this.username}} name={{this.username}}>{{this.username}}</option>
+                {{/each}}
+
+            </select>
+
+            <br><br>
+
+            {{!--             
+            <input type="text" type="hidden" name="id" value="{{user.id}}" /> --}}
+            {{!-- <input type="text" name="userNme" class="field" /><br><br> --}}
+
+            <input type="submit" value="Начать" />
+        </form>
+        <a href="/" class="btn btn-secondary">К списку раздач</a>
+
+        {{!-- <form method="GET">
+            <input type="textArea" name=" " class="field" /><br><br>
+
+        </form> --}}
+    </div>
+
+    <p id="myLog"></p>
+
+</body>
+<html>

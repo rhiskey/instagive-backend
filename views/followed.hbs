@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Просмотр подписанных</title>
+    <meta charset="utf-8" />
+    <style>
+        .add-form {
+            width: 300px;
+            margin: 0 auto;
+            font-family: Tahoma, Geneva, sans-serif;
+        }
+
+        .add-form h1 {
+            text-align: center;
+            color: #4d4d4d;
+            font-size: 24px;
+            padding: 20px 0 20px 0;
+        }
+
+        .add-form input[type="text"],
+        .add-form input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #dddddd;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .add-form input[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            background-color: #535b63;
+            border: 0;
+            box-sizing: border-box;
+            cursor: pointer;
+            font-weight: bold;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="add-form">
+    <h1>Просмотр подписанных юзеров</h1>
+
+            <table>
+            <tr>
+                <th>Username</th>
+                {{!-- <th>Link</th>
+                <th>Avatar</th> --}}
+                <th>Followed</th>
+
+                <th></th>
+            </tr>
+            {{#each users}}
+            <tr>
+                <td>{{this.usernameFollower}}</td>
+                {{!-- <td>{{this.linkFollower}}</td>
+                <td>{{this.avatarFollower}}</td> --}}
+                <td>{{this.followedid}}</td>
+
+                <td>
+                    {{!-- <a href="/edit/{{this.id}}" class="btn btn-secondary">Редактировать</a>| --}}
+                    {{!-- <form action="delete/{{this.id}}" method="POST" style="display:inline;">
+                        <input type="submit" value="Delete" />
+                    </form> --}}
+                </td>
+            </tr>
+            {{/each}}
+        </table>
+    <a href="/" class="btn btn-secondary">К списку раздач</a>
+    </div>
+</body>
+<html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Добавление раздачи</title>
+    <meta charset="utf-8" />
+    <style>
+        .add-form {
+            width: 300px;
+            margin: 0 auto;
+            font-family: Tahoma, Geneva, sans-serif;
+        }
+
+        .add-form h1 {
+            text-align: center;
+            color: #4d4d4d;
+            font-size: 24px;
+            padding: 20px 0 20px 0;
+        }
+
+        .add-form input[type="text"],
+        .add-form input[type="number"]{
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #dddddd;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .add-form input[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            background-color: #535b63;
+            border: 0;
+            box-sizing: border-box;
+            cursor: pointer;
+            font-weight: bold;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="add-form">
+        <h1>Введите данные</h1>
+        <form action="/add" method="post">
+            <label>Никнейм</label><br>
+            <input type="text" name="userName" /><br><br>
+            <label>ID</label><br>
+            <input type="number" name="userID" /><br><br>
+            <label>Ссылка на профиль</label><br>
+            <input type="text" name="userLink" /><br><br>
+            <label>Инфо раздачи</label><br>
+            <input type="text" name="userGiveinfo" /><br><br>
+            <label>Прямая ссылка на аватар</label><br>
+            <input type="text" name="userAvatar" /><br><br>
+            <input type="submit" value="Добавить в БД" />
+        </form>
+        <a href="/">К списку раздач</a>
+    </div>
+    <!-- <script>
+        document.getElementById("submit").addEventListener("click", function (e) {
+             e.preventDefault();
+            // получаем данные формы
+            let registerForm = document.forms["registerForm"];
+            let userName = registerForm.elements["userName"].value;
+            let userAge = registerForm.elements["userAge"].value;
+            // сериализуем данные в json
+            let user = JSON.stringify({userName: userName, userAge: userAge});
+            let request = new XMLHttpRequest();
+            // посылаем запрос на адрес "/user"
+             request.open("POST", "/user", true);   
+             request.setRequestHeader("Content-Type", "application/json");
+             request.addEventListener("load", function () {
+                // получаем и парсим ответ сервера
+                 let receivedUser = JSON.parse(request.response);
+                 console.log(receivedUser.userName, "-", receivedUser.userAge);   // смотрим ответ сервера
+             });
+             request.send(user);
+         });
+    </script> -->
+
+</body>
+
+</html>
