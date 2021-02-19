@@ -64,8 +64,7 @@ class InstagramBot {
             height_scrolling: []
         }
         this.config = config;
-        // this.firebase_db = require('./db');
-        //this.config = require('./config/puppeteer.json');
+
     }
 
 
@@ -85,7 +84,6 @@ class InstagramBot {
 
     async visitInstagram() {
         await this.page.goto(this.config.base_url, { waitUntil: 'load', timeout: 60000 });
-        //await this.page.waitFor(2500);
 
         //Register
         // await this.page.click(this.config.selectors.home_to_login_button);
@@ -106,7 +104,6 @@ class InstagramBot {
         await this.page.waitForNavigation();
 
         //Close Turn On Notification modal after login
-        // //  waiting for selector ".cmbtv" failed: timeout 30000ms exceeded
 
         try { //Save login settings?
             await this.page.waitForSelector(this.config.selectors.not_now_button);
@@ -133,12 +130,7 @@ class InstagramBot {
         await this.page.goto(`${this.config.base_url}/` + instagramNickname, { waitUntil: 'load', timeout: 60000 });
         await this.page.waitFor(2500);
 
-        // // Жмём на кнопку "Подписок"
-        // await this.page.click(this.config.selectors.user_followed_button); //Нужно кликнуть на [2]
-
-        //NEW
         // Click on the following link
-        //Evaluation failed: TypeError: Cannot read property 'click' of null
         await this.page.waitForSelector("a[href*='following']");
         await this.page.evaluate(() => document.querySelector("a[href*='following']").click())
 
@@ -159,14 +151,11 @@ class InstagramBot {
         //         })
         // })
 
-        // console.log(people)
 
-        // await this.page.goto(`${this.config.base_url}/` + instagramNickname + '/following/');
         await this.page.waitFor(2500);
         // Листать вниз и парсить подписоту
-        // let accStr = await this._doScrollFollowingParsing(this.config.selectors.div_accounts, this.config.selectors.ul_accounts, this.config.selectors.li_accounts, this.page)
+       
         var accStr = await this._doScrollFollowingParsing(this.config.selectors.div_accounts, this.config.selectors.ul_accounts, this.config.selectors.li_accounts, this.page).then(() => console.log("Start Parsing"));
-        //  console.log("---------------NEW------------"+ accStr);
 
         await this.page.waitFor(2500);
     }
@@ -176,7 +165,6 @@ class InstagramBot {
             // ОБЪЯВЛЕНИЕ ПЕРЕМЕННЫХ
             var div_accounts = p_div_accounts; // класс тега div списка аккаунтов
             var ul_accounts = p_ul_accounts; // класс тега ul списка аккаунтов
-            //var li_accounts = document.getElementsByClassName("wo9IH"); // класс тега li списка тег аккаунтов
             var li_accounts = p_li_accounts;
             var height_scrolling = []; // массив размеров (высот) скроллинга
             var accountsString = "accs"; //Для возврата в основу
@@ -205,9 +193,6 @@ class InstagramBot {
             }, ".m82CD");
             console.log(`INTERACTING WITH Followers Title:` + titleH1);
 
-            //var titleH1 = document.getElementsByClassName("m82CD")[0]; // класс тега h1 заголовка окна "Подписки"
-
-            //var titleDIV = titleH1.getElementsByTagName("div")[0]; // тег div заголовка
             var title = titleH1.innerHTML;
             // ----------------------------------------------------------------------------------
             // УСЛОВИЕ ВЫБОРА ПОДПИСЧИКИ ИЛИ ПОДПИСКИ
@@ -223,18 +208,11 @@ class InstagramBot {
                 console.log(`INTERACTING WITH Total Count Followers:` + total_count);
 
             } else {
-                // var total_count = document.getElementsByClassName("Y8-fY")[2].innerHTML;
 
                 var total_count1 = await page.evaluate(x => {
                     let element = document.getElementsByClassName(x)[2];
                     return Promise.resolve(element ? element.innerHTML : '');
                 }, "Y8-fY");
-
-                // var total_count1 = await page.$eval(".Y8-fY", node => node.innerHTML);
-
-                // Нужно достать элемент innerHTML внутри total_count который равен 281
-                ///"a.-nal3 > span.g47SY"
-                //<a class="-nal3 " href="/n0wadayyy/following/" tabindex="0"><span class="g47SY ">281</span> подписок</a>
 
 
                 console.log(`INTERACTING WITH Total Count Followers 2: ` + total_count1);
@@ -242,7 +220,7 @@ class InstagramBot {
             // ----------------------------------------------------------------------------------
             // Общее кол-во аккаунтов для сбора
             // ----------------------------------------------------------------------------------
-            // total_count = total_count.match(/[^"]+/g).join('').match(/[^\s]+/g).join('').match(/[^,]+/g).join('');
+
             let firstvariable = "class=\"g47SY \">";
             let secondvariable = "</span>"
             total_count1 = total_count1.match(new RegExp(firstvariable + "(.*)" + secondvariable));
@@ -260,7 +238,7 @@ class InstagramBot {
             // ----------------------------------------------------------------------------------
             // СТАРТ РАБОТЫ СКРОЛЛИНГА + СБОР ДАННЫХ
             // ----------------------------------------------------------------------------------
-            // run_scrolling();
+
             await run_scrolling(page);
             // ----------------------------------------------------------------------------------
             // ----------------------------------------------------------------------------------
@@ -270,7 +248,7 @@ class InstagramBot {
                 // var accounts = ul_accounts[0].innerHTML;
 
                 var accounts = await page.$eval(ul_accounts, node => node.innerHTML);
-                // console.log(`INTERACTING WITH ul_accounts:` + accounts);
+
                 // ------------------------------------------------------------------------------
                 // Разбор ников аккаунтов
                 // ------------------------------------------------------------------------------
@@ -311,18 +289,10 @@ class InstagramBot {
                     //Добавить в окошко /БД
                     return result_nick_name;
                 } else {
-                    // console.log(result_nick);
-                    // console.log(result_avatar);
-
-                    // Followers.setFollowed(result_nick);
-
 
                     setAcc(result_nick);
                     instaAccString = result_nick;
-                    //passResults(result_nick);
-
-                    //Добавить в окошко /БД
-                    // return result_nick;
+     
 
                     const sql = "SELECT userid FROM givaway.mainusers WHERE username = ?";
                     const data = instaNick;
@@ -346,10 +316,10 @@ class InstagramBot {
                                     var instalink = "https://instagram.com/";
                                     var link = instalink + nick;
                                     const data = [nick, results[0].userid, link];
-                                    // connection.connect();
+             
                                     connection.query(sql, data, function(err, results) {
                                         if (err) console.log(err);
-                                        // console.log(results);
+     
                                     });
                                 }
                             }
@@ -361,11 +331,7 @@ class InstagramBot {
 
                 }
                 console.log('%cАккаунтов собрано: ' + result_count + ' шт.', 'color: #13a555; font-size:18px;');
-                //console.log('Аватары: '+result_avatar); //В БД
                 return instaAccString;
-
-
-                // console.log('%cВыделите собранные имена аккаунтов выше и нажмите CTRL-C, чтобы скопировать.', 'color: #13a555; font-size:16px;');
 
             }
             // ----------------------------------------------------------------------------------
@@ -406,18 +372,11 @@ class InstagramBot {
                     accountsString = await start_parsing(page2pass);
                     console.log("---------------Accounts:------------" + "\n" + accountsString);
 
-                    // if (accountsString) parsed = true;
-
-                    //Получить id по нику, если ID есть - > Добавить в БД
-
-
                 }
                 return false;
-                //return accountsString;
-                // } catch (e) { console.log(e.message); }
+
             }
-            //console.log("---------------NEW------------" + "\n" + accountsString);
-            //return accountsString;
+
 
         } catch (e) {
             console.log('%cНажмите на странице Instagram на Подписчиков или Подписки, и запустите заново скрипт', 'color: #a22e1c; font-size:18px;' + '\n' + e.message);
@@ -427,18 +386,11 @@ class InstagramBot {
     async parseAvatar(userNickName) {
         var avatar = await this.page.$eval(this.config.selectors.avatar_span, node => node.innerHTML);
 
-        // this.config.selectors.avatar_span;
-        // this.config.selectors.avatar;
         // ------------------------------------------------------------------------------
         // Разбор аватаров аккаунтов
         // ------------------------------------------------------------------------------
         var result_avatar = avatar.match(/src="[^"]+"/g);
-        //src="https://scontent-arn2-1.cdninstagram.com/v/t51.2885-19/s150x150/106212193_290471092311333_7334423558466710724_n.jpg?_nc_ht=scontent-arn2-1.cdninstagram.com&amp;_nc_ohc=11Kn5_-9ilQAX8UPXWM&amp;oh=282980cbbbe8bf55494f06eb144c4584&amp;oe=5F2E24BF"
-        // result_avatar.splice(user_count);
-        // result_avatar = result_avatar.join(' ').match(/"[^"]+"/g).join(' ').match(/[^"]+/g).join('').match(/[^\s]+/g).join('\n');
 
-        //Delete src=" "
-        //var ret = result_avatar.replace('src="','');
         var new_result_avatar = result_avatar.toString().replace('src=\"', '');
         new_result_avatar = new_result_avatar.replace('\"', '');
         //UPDATE AVATAR IN SQL
@@ -578,11 +530,6 @@ class InstagramBot {
         await this.browser.close();
     }
 
-    // async setAcc(acc) {
-    //     instaAccString = acc;
-    // }
-
-    // async getAcc() { instaAccString };
 
 }
 
@@ -592,25 +539,7 @@ const setAcc = acc => {
 
 const getAcc = () => { return instaAccString; };
 
-// module.exports.result_nick;
 module.exports = { instaAccString };
 
 module.exports = InstagramBot;
 
-// var Followers = module.exports = {
-//     InstagramBot,
-//     setFollowed: function(acc) {
-//         instaAccString = acc;
-//     },
-//     getFollowed: function() {
-//         return instaAccString;
-//     }
-// }
-// class InstagramBot{
-//     constructor(instaAccString) {
-//         this.instaAccString = instaAccString;
-//     }
-//     accs(){
-//         return this.instaAccString;
-//     }
-// };
